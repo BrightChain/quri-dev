@@ -1,0 +1,51 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "noEmit": false,
+    "outDir": "./dist/out-tsc",
+    "skipLibCheck": true,
+    "target": "es2020",
+    "module": "es2020",
+    "lib": [
+      "es2020",
+      "dom"
+    ]
+  },
+  "typeRoots": [ "types" ],
+  "typingOptions": {
+    "enableAutoDiscovery": true
+  },
+  "include": [
+    "src/index.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "build/**/*"
+  ],
+  "files": [
+    "src/index.ts"
+  ],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}
