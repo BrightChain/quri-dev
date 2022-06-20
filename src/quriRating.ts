@@ -1,9 +1,16 @@
 //FileName : quriRating.ts
 /// <reference types="node" />
 'use strict';
-import { IQuriRating } from './interfaces';
+import { IQuriRating, IQuriUri, IQuriUser } from './interfaces';
 
 export class QuriRating implements IQuriRating {
+  addRating(
+    uri: IQuriUri,
+    user: IQuriUser,
+    rating: bigint
+  ): Promise<IQuriRating> {
+    throw new Error('Method not implemented.');
+  }
   hash: string;
   creatorId: string;
   rating: bigint;

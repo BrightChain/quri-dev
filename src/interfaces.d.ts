@@ -14,12 +14,13 @@ interface IQuriApp {
   onLoad: () => void;
 }
 interface IQuriUser implements User {
-
+  rateUri(uri: IQuriUri): Promise<IQuriRating>;
 };
 interface IQuriUri {
   uri: string;
   hash: string;
   dateAdded: bigint;
+  addUri(uri: string): Promise<IQuriUri>;
 }
 interface IQuriRating {
   hash: string;
@@ -28,4 +29,5 @@ interface IQuriRating {
   weight: number;
   signature: string;
   dateAdded: bigint;
+  addRating(uri: IQuriUri, user: IQuriUser, rating: bigint): Promise<IQuriRating>;
 }

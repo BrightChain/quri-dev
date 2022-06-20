@@ -2,7 +2,7 @@
 /// <reference types="node" />
 'use strict';
 import { IdTokenResult, UserInfo, UserMetadata } from 'firebase/auth';
-import { IQuriUser } from './interfaces';
+import { IQuriRating, IQuriUri, IQuriUser } from './interfaces';
 
 export class QuriUser implements IQuriUser {
   emailVerified: boolean;
@@ -19,6 +19,9 @@ export class QuriUser implements IQuriUser {
   }
   getIdTokenResult(forceRefresh?: boolean | undefined): Promise<IdTokenResult> {
     throw new Error('Method not implemented.');
+  }
+  rateUri(uri: IQuriUri): Promise<IQuriRating> {
+    throw new Error('Method not implemented');
   }
   reload(): Promise<void> {
     throw new Error('Method not implemented.');
