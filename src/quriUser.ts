@@ -20,6 +20,9 @@ export class QuriUser implements IQuriUser {
   getIdTokenResult(forceRefresh?: boolean | undefined): Promise<IdTokenResult> {
     throw new Error('Method not implemented.');
   }
+  getUser(id: string): Promise<IQuriUser> {
+    throw new Error('Method not implemented.');
+  }
   rateUri(uri: IQuriUri): Promise<IQuriRating> {
     throw new Error('Method not implemented');
   }

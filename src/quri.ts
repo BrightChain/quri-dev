@@ -32,6 +32,7 @@ const allFeatures: Array<string> = [
   'performance',
 ];
 const _quri: IQuriApp = {
+  angularProduction: environment.production,
   production:
     environment.production && firebaseConfig.projectId != 'quri-development',
   firebaseApp:
