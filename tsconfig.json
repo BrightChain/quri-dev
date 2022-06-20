@@ -33,7 +33,10 @@
     "enableAutoDiscovery": true
   },
   "include": [
-    "src/quri.ts"
+    "src/quri.ts",
+    "src/quriRating.ts",
+    "src/quriUri.ts",
+    "src/quriUser.ts"
   ],
   "exclude": [
     "node_modules",

@@ -7,6 +7,9 @@
   },
   "files": [
     "src/quri.ts",
+    "src/quriRating.ts",
+    "src/quriUri.ts",
+    "src/quriUser.ts",
     "src/polyfills.ts"
   ],
   "include": [
