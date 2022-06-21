@@ -6,6 +6,7 @@
     "types": []
   },
   "files": [
+    "src/index.ts",
     "src/quri.ts",
     "src/quriRating.ts",
     "src/quriUri.ts",
