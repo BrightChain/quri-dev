@@ -17,7 +17,12 @@ jobs:
           firebaseAppCheckKey: '${{ secrets.FIREBASE_APP_CHECK_KEY }}'
           firebaseConfig: '${{ secrets.FIREBASE_CONFIG }}'
           projectId: '${{ secrets.FIREBASE_PROJECTID }}'
-      - run: npm ci && npm run build
+      - name: "production build"
+        if: ${{ secrets.FIREBASE_PROJECTID == 'quri-social' }}
+        run: npm ci && npm run build
+      - name: "debug build"
+        if: ${{ secrets.FIREBASE_PROJECTID == 'quri-development' }}
+        run: npm ci && npm run build:debug
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           channelId: live
