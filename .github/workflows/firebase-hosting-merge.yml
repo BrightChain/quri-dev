@@ -18,11 +18,14 @@ jobs:
           firebaseConfig: '${{ secrets.FIREBASE_CONFIG }}'
           projectId: '${{ secrets.FIREBASE_PROJECTID }}'
       - name: "production build"
-        if: ${{ env.GITHUB_REPOSITORY == 'BrightChain/quri' }}
+        if: ${{ github.repository == 'BrightChain/quri' }}
         run: npm ci && npm run build
       - name: "debug build"
-        if: ${{ env.GITHUB_REPOSITORY == 'BrightChain/quri-dev' }}
+        if: ${{ github.repository == 'BrightChain/quri-dev' }}
         run: npm ci && npm run build:debug
+      - name: "fail build"
+        if: ${{ github.repository != 'BrightChain/quri' && github.repository != 'BrightChain/quri-dev' }}
+        run: "exit 1"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           channelId: live
