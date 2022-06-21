@@ -19,7 +19,7 @@
           "options": {
             "outputPath": "public",
             "index": "src/index.html",
-            "main": "src/quri.ts",
+            "main": "src/index.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",

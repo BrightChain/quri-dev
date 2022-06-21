@@ -33,6 +33,7 @@
     "enableAutoDiscovery": true
   },
   "include": [
+    "src/index.ts",
     "src/quri.ts",
     "src/quriRating.ts",
     "src/quriUri.ts",
@@ -43,7 +44,7 @@
     "build/**/*"
   ],
   "files": [
-    "src/quri.ts"
+    "src/index.ts"
   ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
