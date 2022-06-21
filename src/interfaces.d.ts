@@ -36,20 +36,24 @@ export interface IQuriApp {
   firebaseHosting: boolean;
   firebaseApp: FirebaseApp | null;
   firebaseExtensionsLoaded: Array<string>;
-  static async getConfigFromHosting(): Promise<IWebConfig>;
+  static getConfigFromHosting(): Promise<IWebConfig>;
   static onLoad(): void;
 }
-export interface IQuriUser implements User {
-  static async getUser(id: string): Promise<IQuriUser>;
-  static async rateUri(uri: IQuriUri): Promise<IQuriRating>;
-};
+export interface IQuriUser {
+  firebaseUser: User;
+  static getUser(id: string): Promise<IQuriUser>;
+  static rateUri(uri: IQuriUri): Promise<IQuriRating>;
+}
 export interface IQuriUri {
   uri: string;
   hash: string;
   dateAdded: bigint;
-  static async addUri(uri: string): Promise<IQuriUri>;
-  static async getUri(uri: string, autoCreate: boolean | undefined): Promise<IQuriUri | null>;
-  async getScore(): Promise<bigint>;
+  static addUri(uri: string): Promise<IQuriUri>;
+  static getUri(
+    uri: string,
+    autoCreate: boolean | undefined
+  ): Promise<IQuriUri | null>;
+  getScore(): Promise<bigint>;
 }
 export interface IQuriRating {
   id: string;
@@ -59,8 +63,12 @@ export interface IQuriRating {
   weight: number;
   signature: string;
   dateAdded: bigint;
-  static async addRating(uri: IQuriUri, user: IQuriUser, rating: bigint): Promise<IQuriRating>;
-  static async getRating(id: string): Promise<IQuriRating>;
-  async getQuriUri(): Promise<IQuriUri>;
-  async getQuriUser(): Promise<IQuriUser>;
+  static addRating(
+    uri: IQuriUri,
+    user: IQuriUser,
+    rating: bigint
+  ): Promise<IQuriRating>;
+  static getRating(id: string): Promise<IQuriRating>;
+  getQuriUri(): Promise<IQuriUri>;
+  getQuriUser(): Promise<IQuriUser>;
 }

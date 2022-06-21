@@ -5,10 +5,9 @@ import { firebaseConfig } from './firebaseConfig';
 import { firebaseAppCheckConfig } from './firebaseAppCheckConfig';
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
-import { IFirebaseConfig, IQuriApp, IWebConfig } from './interfaces';
+import { IQuriApp, IWebConfig } from './interfaces';
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { fetchWebSetup } from 'firebase-tools';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -34,25 +33,26 @@ const allFeatures: Array<string> = [
 ];
 const _quri: IQuriApp = {
   angularProduction: environment.production,
-  production: environment.production && firebaseConfig.projectId != 'quri-development',
-  firebaseApp: window.firebase !== undefined &&
+  production:
+    environment.production && firebaseConfig.projectId != 'quri-development',
+  firebaseApp:
+    window.firebase !== undefined &&
     window.firebase.apps !== undefined &&
     window.firebase.apps.length > 0 &&
     window.firebase.apps[0] !== undefined &&
     window.firebase.apps[0] !== null
-    ? window.firebase.apps[0]
-    : null,
+      ? window.firebase.apps[0]
+      : null,
   firebaseAppCheck: null,
   firebaseExtensionsLoaded: [],
-  firebaseHosting: window.firebase !== undefined &&
+  firebaseHosting:
+    window.firebase !== undefined &&
     window.firebase.apps !== undefined &&
     window.firebase.apps.length > 0 &&
     window.firebase.apps[0] !== undefined &&
     window.firebase.apps[0] !== null,
   getConfigFromHosting: async function (): Promise<IWebConfig> {
-    const webConfig = await fetchWebSetup();
-    console.log(webConfig);
-    return webConfig;
+    throw new Error('Method not implemented.');
   },
   onLoad: function (): void {
     try {
@@ -75,7 +75,7 @@ const _quri: IQuriApp = {
     } catch (e) {
       console.error(e);
     }
-  }
+  },
 };
 window.quri = window.quri || _quri;
 

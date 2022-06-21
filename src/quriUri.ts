@@ -4,6 +4,11 @@
 import { IQuriUri } from './interfaces';
 
 export class QuriUri implements IQuriUri {
+  constructor(uri: string, hash: string) {
+    this.uri = uri;
+    this.hash = hash;
+    this.dateAdded = BigInt(-1);
+  }
   addUri(uri: string): Promise<IQuriUri> {
     throw new Error('Method not implemented.');
   }
