@@ -18,10 +18,10 @@ jobs:
           firebaseConfig: '${{ secrets.FIREBASE_CONFIG }}'
           projectId: '${{ secrets.FIREBASE_PROJECTID }}'
       - name: "production build"
-        if: ${{ secrets.FIREBASE_PROJECTID == 'quri-social' }}
+        if: ${{ env.GITHUB_REPOSITORY == 'BrightChain/quri' }}
         run: npm ci && npm run build
       - name: "debug build"
-        if: ${{ secrets.FIREBASE_PROJECTID == 'quri-development' }}
+        if: ${{ env.GITHUB_REPOSITORY == 'BrightChain/quri-dev' }}
         run: npm ci && npm run build:debug
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
