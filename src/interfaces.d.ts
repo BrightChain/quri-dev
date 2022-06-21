@@ -30,14 +30,16 @@ export interface IWebConfig {
   messagingSenderId?: string;
 }
 export interface IQuriApp {
-  angularProduction: boolean;
   production: boolean;
-  firebaseAppCheck: AppCheck | null;
-  firebaseHosting: boolean;
-  firebaseApp: FirebaseApp | null;
+  firebaseAppCheck: AppCheck;
+  firebaseApp: FirebaseApp;
   firebaseExtensionsLoaded: Array<string>;
+}
+export interface IQuriWindow {
+  environmentIsProduction: boolean;
+  firebaseHosting: boolean;
+  quri: IQuriApp | null;
   static getConfigFromHosting(): Promise<IWebConfig>;
-  static onLoad(): void;
 }
 export interface IQuriUser {
   firebaseUser: User;
