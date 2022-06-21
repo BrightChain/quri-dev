@@ -1,4 +1,4 @@
-![qURI-192x192](https://user-images.githubusercontent.com/3766240/174500047-4c2bc955-6b08-4da7-a84e-f2d55d1400b3.png)
+<img src="https://user-images.githubusercontent.com/3766240/174692283-97aa5dee-1bcf-4ff4-a75f-6ce3e2a546af.png" width="192" alt="qURI logo" />
 
 # qURI: Rank anything that can be represented in a URI/URL.
 * People
@@ -25,4 +25,4 @@ Rankings can then be used by API for reputation systems, anti-spam (email, phone
 - https://github.com/ajboard13/AngularFire2-Authentication-Template/tree/master/src/app
 - https://github.com/googlearchive/friendlypix-web
 
-![qURI-icon-128x128](https://user-images.githubusercontent.com/3766240/174500048-0c6089b1-63dc-43d1-8504-2a44998b8a95.png)
+<img src="https://user-images.githubusercontent.com/3766240/174692642-94753bcf-31b2-430d-8ad6-a2b67dee48f0.png" width="128" alt="qURI favicon" />
