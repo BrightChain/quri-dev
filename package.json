@@ -18,7 +18,7 @@
   "author": "Digital Defiance and contributors",
   "license": "MIT",
   "devDependencies": {
-    "@angular/animations": "^14.0.0",
+    "@angular/animations": "^14.0.3",
     "@angular/common": "^14.0.0",
     "@angular/compiler": "^14.0.0",
     "@angular/core": "^14.0.0",
