@@ -2,6 +2,7 @@
 /// <reference types="node" />
 'use strict';
 import { QuriApp } from './quri';
+import { QuriWindow } from './quriWindow';
 import { ConfigurationHelper } from './configurationHelper';
 import { IQuriWindow } from './interfaces';
 import { environment } from './environments/environment';
@@ -16,10 +17,7 @@ declare global {
   }
 }
 
-const _quri: IQuriWindow = {
-  environmentIsProduction: environment.production,
-  quri: null,
-};
+const _quri: QuriWindow = new QuriWindow();
 
 document.addEventListener('DOMContentLoaded', async () => {
   const configuration = await ConfigurationHelper.EnsureConfiguration();
