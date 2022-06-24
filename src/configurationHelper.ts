@@ -80,19 +80,18 @@ export class ConfigurationHelper {
       try {
         switch (method) {
           case 0:
-            console.debug('trying method: GetConfigFromRunningApp()');
             // try running app
             // see if we can get it out of a firebase app instance (hosting init.js)
             configToUse = await ConfigurationHelper.GetConfigFromRunningApp();
             configSource = ConfigurationSource.FirebaseHostingApp;
             break;
           case 1:
-            console.debug('trying method: GetConfigFromHosting()');
+            // directly try to access hosting init.js config
             configToUse = await ConfigurationHelper.GetConfigFromHosting();
             configSource = ConfigurationSource.FirebaseHosting;
             break;
           default:
-            console.error(
+            return Promise.reject(
               'Unable to find a firebase configuration that looks valid'
             );
         }

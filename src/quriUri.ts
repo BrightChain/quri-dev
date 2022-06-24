@@ -2,18 +2,33 @@
 /// <reference types="node" />
 'use strict';
 import { IQuriUri } from './interfaces';
+import { createHash } from 'crypto';
 
 export class QuriUri implements IQuriUri {
-  constructor(uri: string, hash: string) {
+  constructor(uri: URL, hash?: string) {
     this.uri = uri;
-    this.hash = hash;
+    if (hash === undefined) {
+      this.hash = this.hashUrl(uri);
+    } else {
+      this.hash = hash;
+    }
     this.dateAdded = BigInt(-1);
   }
-  async addUri(uri: string): Promise<IQuriUri> {
+  hashUrl(uri: URL): string {
+    // take the sha-256 hash of the URL/URI string
+    const hash = createHash('sha256');
+    hash.update(uri.toString());
+    return hash.digest('hex');
+  }
+  async addUri(uri: URL): Promise<IQuriUri> {
+    const hash = this.hashUrl(uri);
+    const quriUri = new QuriUri(uri, hash);
+    // TODO: upsert to firebase
     throw new Error('Method not implemented.');
+    return Promise.resolve(quriUri);
   }
   async getUri(
-    uri: string,
+    uri: URL,
     autoCreate: boolean | undefined
   ): Promise<IQuriUri | null> {
     throw new Error('Method not implemented.');
@@ -21,7 +36,7 @@ export class QuriUri implements IQuriUri {
   async getScore(): Promise<bigint> {
     throw new Error('Method not implemented.');
   }
-  uri: string;
+  uri: URL;
   hash: string;
   dateAdded: bigint;
 }

@@ -26,15 +26,16 @@ export interface IQuriUser {
   static rateUri(uri: IQuriUri): Promise<IQuriRating>;
 }
 export interface IQuriUri {
-  uri: string;
+  uri: URL;
   hash: string;
   dateAdded: bigint;
-  static addUri(uri: string): Promise<IQuriUri>;
+  static addUri(uri: URL): Promise<IQuriUri>;
   static getUri(
-    uri: string,
+    uri: URL,
     autoCreate: boolean | undefined
   ): Promise<IQuriUri | null>;
   getScore(): Promise<bigint>;
+  static hashUrl(uri: URL): string;
 }
 export interface IQuriRating {
   id: string;
