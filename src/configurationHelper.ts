@@ -12,7 +12,7 @@ declare global {
 }
 
 export class ConfigurationHelper {
-  static async getConfigFromRunningApp(): Promise<FirebaseOptions> {
+  static async GetConfigFromRunningApp(): Promise<FirebaseOptions> {
     if (
       window.firebase !== undefined &&
       window.firebase !== null &&
@@ -70,6 +70,7 @@ export class ConfigurationHelper {
     }
   }
   static async EnsureConfiguration(): Promise<IConfigurationPair> {
+    console.debug('entering EnsureConfiguration()');
     // start with the config from environment
     let configToUse: FirebaseOptions = environment.firebaseConfig;
     let configSource: ConfigurationSource = ConfigurationSource.Environment;
@@ -77,14 +78,16 @@ export class ConfigurationHelper {
     // if the config doesn't look like it is populated, try to get from Firebase hosting
     while (configToUse.apiKey === undefined || configToUse.apiKey == '') {
       try {
-        switch (method++) {
+        switch (method) {
           case 0:
+            console.debug('trying method: GetConfigFromRunningApp()');
             // try running app
             // see if we can get it out of a firebase app instance (hosting init.js)
-            configToUse = await ConfigurationHelper.getConfigFromRunningApp();
+            configToUse = await ConfigurationHelper.GetConfigFromRunningApp();
             configSource = ConfigurationSource.FirebaseHostingApp;
             break;
           case 1:
+            console.debug('trying method: GetConfigFromHosting()');
             configToUse = await ConfigurationHelper.GetConfigFromHosting();
             configSource = ConfigurationSource.FirebaseHosting;
             break;
@@ -94,8 +97,13 @@ export class ConfigurationHelper {
             );
         }
       } catch (error) {
-        console.error(error);
+        if (error === undefined) {
+          console.log('auto-config method failed', method);
+        } else {
+          console.log(method, error);
+        }
       }
+      method++;
     }
     return Promise.resolve({ source: configSource, options: configToUse });
   }
