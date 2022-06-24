@@ -11,6 +11,8 @@ export interface IFirebaseAppCheckConfig {
   siteKey: string;
 }
 export interface IQuriApp {
+  auth: Auth | null;
+  firestore: Firestore | null;
   production: boolean;
   firebaseAppCheck: AppCheck;
   firebaseApp: FirebaseApp;

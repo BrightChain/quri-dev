@@ -2,7 +2,9 @@
 /// <reference types="node" />
 'use strict';
 import { IQuriUri } from './interfaces';
+import { QuriApp } from './quri';
 import { createHash } from 'crypto';
+import { collection, doc, setDoc } from 'firebase/firestore';
 
 export class QuriUri implements IQuriUri {
   constructor(uri: URL, hash?: string) {
@@ -35,6 +37,14 @@ export class QuriUri implements IQuriUri {
   }
   async getScore(): Promise<bigint> {
     throw new Error('Method not implemented.');
+  }
+  async save(quri: QuriApp): Promise<void> {
+    if (quri.firestore === null) {
+      throw new Error('Firestore is not initialized');
+    }
+    const urisRef = collection(quri.firestore, 'uris');
+
+    await setDoc(doc(urisRef, this.hash), this);
   }
   uri: URL;
   hash: string;

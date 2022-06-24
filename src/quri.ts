@@ -3,6 +3,21 @@
 'use strict';
 
 import { initializeApp, FirebaseApp } from 'firebase/app';
+import { getAuth, Auth } from 'firebase/auth';
+import {
+  collection as firestoreCollection,
+  doc as firestoreDoc,
+  QuerySnapshot as firestoreQuerySnapshot,
+  DocumentData as firestoreDocumentData,
+  getFirestore,
+  onSnapshot as firestoreOnSnapshot,
+  query as firestoreQuery,
+  serverTimestamp as firestoreServerTimestamp,
+  setDoc as firestoreSetDoc,
+  where as firestoreWhere,
+  Firestore,
+  FieldValue,
+} from 'firebase/firestore';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { AppCheck } from '@angular/fire/app-check';
 import { enableProdMode } from '@angular/core';
@@ -26,7 +41,17 @@ const allFeatures: Array<string> = [
 ];
 
 export class QuriApp implements IQuriApp {
+  public static getInstance(): QuriApp {
+    if (QuriApp.instance === null) {
+      throw new Error('QuriApp not instantiated');
+    }
+    return QuriApp.instance;
+  }
   constructor(firebaseApp: FirebaseApp) {
+    if (QuriApp.instance !== null) {
+      throw new Error('QuriApp already instantiated');
+    }
+    QuriApp.instance = this;
     this.firebaseApp = firebaseApp;
     this.firebaseAppCheck = initializeAppCheck(this.firebaseApp, {
       provider: new ReCaptchaV3Provider(firebaseAppCheckConfig.siteKey),
@@ -46,6 +71,9 @@ export class QuriApp implements IQuriApp {
       }
     }
 
+    this.auth = getAuth();
+    this.firestore = getFirestore(this.firebaseApp);
+
     if (this.production) {
       enableProdMode();
     }
@@ -54,6 +82,9 @@ export class QuriApp implements IQuriApp {
       .bootstrapModule(AppModule)
       .catch((err) => console.error(err));
   }
+  private static instance: QuriApp | null;
+  auth: Auth | null;
+  firestore: Firestore | null;
   production: boolean;
   firebaseAppCheck: AppCheck;
   firebaseApp: FirebaseApp;
