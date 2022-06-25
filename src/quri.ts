@@ -83,8 +83,8 @@ export class QuriApp implements IQuriApp {
       .catch((err) => console.error(err));
   }
   private static instance: QuriApp | null;
-  auth: Auth | null;
-  firestore: Firestore | null;
+  auth: Auth;
+  firestore: Firestore;
   production: boolean;
   firebaseAppCheck: AppCheck;
   firebaseApp: FirebaseApp;

@@ -4,12 +4,13 @@
 import { IQuriRating, IQuriUri, IQuriUser } from './interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { QuriUser } from './quriUser';
+import { serverTimestamp, Timestamp } from 'firebase/firestore';
 
 export class QuriRating implements IQuriRating {
   constructor(user: QuriUser, uri: IQuriUri, rating: bigint, weight: number) {
     this.id = uuidv4();
-    this.creatorId = user.firebaseUser.uid;
-    this.dateAdded = BigInt(-1);
+    this.creatorId = user.user.uid;
+    this.dateAdded = serverTimestamp() as Timestamp;
     this.hash = uri.hash;
     this.rating = rating;
     this.signature = '';
@@ -37,5 +38,5 @@ export class QuriRating implements IQuriRating {
   rating: bigint;
   weight: number;
   signature: string;
-  dateAdded: bigint;
+  dateAdded: Timestamp;
 }
