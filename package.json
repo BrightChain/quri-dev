@@ -18,7 +18,7 @@
   "author": "Digital Defiance and contributors",
   "license": "MIT",
   "devDependencies": {
-    "@angular/animations": "^14.0.0",
+    "@angular/animations": "^14.0.3",
     "@angular/common": "^14.0.3",
     "@angular/compiler": "^14.0.0",
     "@angular/core": "^14.0.0",
@@ -52,15 +52,19 @@
     "@angular/cli": "~14.0.2",
     "@angular/compiler-cli": "^14.0.3",
     "@angular/fire": "^7.4.1",
+    "@angular/material": "^14.0.3",
     "@types/blazor__javascript-interop": "^3.1.2",
     "@types/jasmine": "~4.0.0",
     "firebaseui": "^6.0.1",
+    "install": "^0.13.0",
     "jasmine-core": "~4.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "material-icons": "^1.11.2",
+    "npm": "^8.13.1",
     "typescript": "~4.7.2"
   }
 }

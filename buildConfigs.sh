@@ -1,6 +1,13 @@
 #!/bin/bash
 currentDir=$(pwd)
+if [[ "$projectId" == "" ]]; then
+	echo "Input projectId:"
+	read projectId
+	echo "Input firebaseAppCheckKey:"
+	read firebaseAppCheckKey
+fi
 echo "Running ${0} for project ${projectId} from ${currentDir}"
+
 
 echo "Making src/firebaseAppCheckConfig.ts"
 APP_CHECK_CONFIG="export const firebaseAppCheckConfig = {\\n  siteKey: '${firebaseAppCheckKey}',\\n};"

@@ -24,5 +24,9 @@ Rankings can then be used by API for reputation systems, anti-spam (email, phone
 - https://github.com/nibmz7/live-parade-state
 - https://github.com/ajboard13/AngularFire2-Authentication-Template/tree/master/src/app
 - https://github.com/googlearchive/friendlypix-web
+- https://dev.to/jdgamble555/angular-12-with-firebase-9-49a0
+- https://modern-admin-docs.web.app/html/ltr/documentation/documentation-setup.html
+- https://medium.com/learn-angular/user-handling-with-firebase-and-angular-b188ecb95e2d
+
 
 <img src="https://user-images.githubusercontent.com/3766240/174692642-94753bcf-31b2-430d-8ad6-a2b67dee48f0.png" width="128" alt="qURI favicon" />

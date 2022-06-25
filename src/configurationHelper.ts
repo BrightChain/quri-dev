@@ -97,7 +97,7 @@ export class ConfigurationHelper {
         }
       } catch (error) {
         if (error === undefined) {
-          console.log('auto-config method failed', method);
+          console.debug('auto-config method failed', method);
         } else {
           console.log(method, error);
         }

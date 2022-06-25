@@ -1,4 +1,4 @@
-//FileName : quri.ts
+//FileName : quriApp.ts
 /// <reference types="node" />
 'use strict';
 
@@ -41,17 +41,7 @@ const allFeatures: Array<string> = [
 ];
 
 export class QuriApp implements IQuriApp {
-  public static getInstance(): QuriApp {
-    if (QuriApp.instance === null) {
-      throw new Error('QuriApp not instantiated');
-    }
-    return QuriApp.instance;
-  }
   constructor(firebaseApp: FirebaseApp) {
-    if (QuriApp.instance !== null) {
-      throw new Error('QuriApp already instantiated');
-    }
-    QuriApp.instance = this;
     this.firebaseApp = firebaseApp;
     this.firebaseAppCheck = initializeAppCheck(this.firebaseApp, {
       provider: new ReCaptchaV3Provider(firebaseAppCheckConfig.siteKey),
@@ -82,9 +72,8 @@ export class QuriApp implements IQuriApp {
       .bootstrapModule(AppModule)
       .catch((err) => console.error(err));
   }
-  private static instance: QuriApp | null;
-  auth: Auth | null;
-  firestore: Firestore | null;
+  auth: Auth;
+  firestore: Firestore;
   production: boolean;
   firebaseAppCheck: AppCheck;
   firebaseApp: FirebaseApp;

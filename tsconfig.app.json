@@ -7,7 +7,7 @@
   },
   "files": [
     "src/index.ts",
-    "src/quri.ts",
+    "src/quriApp.ts",
     "src/quriRating.ts",
     "src/quriUri.ts",
     "src/quriUser.ts",

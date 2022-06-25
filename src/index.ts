@@ -1,7 +1,7 @@
 //FileName : index.ts
 /// <reference types="node" />
 'use strict';
-import { QuriApp } from './quri';
+import { QuriApp } from './quriApp';
 import { QuriWindow } from './quriWindow';
 import { ConfigurationHelper } from './configurationHelper';
 import { IQuriWindow } from './interfaces';
@@ -18,14 +18,19 @@ declare global {
 }
 
 const _quri: QuriWindow = new QuriWindow();
+window.quri = window.quri || _quri;
 
-document.addEventListener('DOMContentLoaded', async () => {
+const _quriFunc = async () => {
+  console.debug('reloading quri and setting new window instance');
   const configuration = await ConfigurationHelper.EnsureConfiguration();
   environment.configurationSource = configuration.source;
-  _quri.quri = new QuriApp(
+  const newApp = new QuriApp(
     await ConfigurationHelper.EnsureApp(configuration.options)
   );
-  window.quri = window.quri || _quri;
-});
+  _quri.quri = newApp;
+  window.quri = _quri;
+};
+
+document.addEventListener('DOMContentLoaded', _quriFunc);
 
 export default { quri: _quri };

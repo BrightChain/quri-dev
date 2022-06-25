@@ -2,9 +2,15 @@
 /// <reference types="node" />
 'use strict';
 import { IQuriUri } from './interfaces';
-import { QuriApp } from './quri';
+import { QuriApp } from './quriApp';
 import { createHash } from 'crypto';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+  Timestamp,
+} from 'firebase/firestore';
 
 export class QuriUri implements IQuriUri {
   constructor(uri: URL, hash?: string) {
@@ -14,13 +20,18 @@ export class QuriUri implements IQuriUri {
     } else {
       this.hash = hash;
     }
-    this.dateAdded = BigInt(-1);
+    this.dateAdded = serverTimestamp() as Timestamp;
   }
   hashUrl(uri: URL): string {
     // take the sha-256 hash of the URL/URI string
     const hash = createHash('sha256');
     hash.update(uri.toString());
     return hash.digest('hex');
+  }
+  validate(): boolean {
+    return (
+      this.uri.toString().length > 0 && this.hash == this.hashUrl(this.uri)
+    );
   }
   async addUri(uri: URL): Promise<IQuriUri> {
     const hash = this.hashUrl(uri);
@@ -39,14 +50,11 @@ export class QuriUri implements IQuriUri {
     throw new Error('Method not implemented.');
   }
   async save(quri: QuriApp): Promise<void> {
-    if (quri.firestore === null) {
-      throw new Error('Firestore is not initialized');
-    }
     const urisRef = collection(quri.firestore, 'uris');
 
     await setDoc(doc(urisRef, this.hash), this);
   }
   uri: URL;
   hash: string;
-  dateAdded: bigint;
+  dateAdded: Timestamp;
 }

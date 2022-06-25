@@ -2,7 +2,7 @@
 /// <reference types="node" />
 'use strict';
 import { IQuriWindow } from './interfaces';
-import { QuriApp } from './quri';
+import { QuriApp } from './quriApp';
 import { environment } from './environments/environment';
 
 export class QuriWindow implements IQuriWindow {
