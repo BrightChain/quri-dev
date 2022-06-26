@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.236.0/containers/typescript-node
 {
-	"name": "Node.js & TypeScript",
+	"name": "qURI",
 	"build": {
 		"dockerfile": "Dockerfile",
 		// Update 'VARIANT' to pick a Node version: 18, 16, 14.
