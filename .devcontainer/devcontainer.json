@@ -22,7 +22,8 @@
 				"GitHub.copilot",
 				"eg2.vscode-npm-script",
 				"Angular.ng-template",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"ms-vscode-remote.remote-containers"
 			]
 		}
 	},
