@@ -8,7 +8,7 @@ export enum ConfigurationSource {
 export interface IEnvironment {
   production: boolean;
   configurationSource: ConfigurationSource;
-  firebaseConfig: FirebaseOptions;
+  firebase: FirebaseOptions;
 }
 
 /* replace with your own values if required, while these are not sensitive accoreding to firebase,
@@ -19,7 +19,7 @@ export interface IEnvironment {
 export const environment: IEnvironment = {
   production: true,
   configurationSource: ConfigurationSource.Environment,
-  firebaseConfig: {
+  firebase: {
     apiKey: '',
     appId: '',
     authDomain: '',

@@ -2,29 +2,14 @@
 /// <reference types="node" />
 'use strict';
 
-import { initializeApp, FirebaseApp } from 'firebase/app';
+import { FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
-import {
-  collection as firestoreCollection,
-  doc as firestoreDoc,
-  QuerySnapshot as firestoreQuerySnapshot,
-  DocumentData as firestoreDocumentData,
-  getFirestore,
-  onSnapshot as firestoreOnSnapshot,
-  query as firestoreQuery,
-  serverTimestamp as firestoreServerTimestamp,
-  setDoc as firestoreSetDoc,
-  where as firestoreWhere,
-  Firestore,
-  FieldValue,
-} from 'firebase/firestore';
+import { getFirestore, Firestore } from 'firebase/firestore';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { AppCheck } from '@angular/fire/app-check';
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { IQuriApp } from './interfaces';
-import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { firebaseAppCheckConfig } from './firebaseAppCheckConfig';
 
@@ -42,6 +27,9 @@ const allFeatures: Array<string> = [
 
 export class QuriApp implements IQuriApp {
   constructor(firebaseApp: FirebaseApp) {
+    if (firebaseApp === undefined) {
+      throw new Error('firebaseApp is undefined');
+    }
     this.firebaseApp = firebaseApp;
     this.firebaseAppCheck = initializeAppCheck(this.firebaseApp, {
       provider: new ReCaptchaV3Provider(firebaseAppCheckConfig.siteKey),
@@ -50,27 +38,13 @@ export class QuriApp implements IQuriApp {
       // tokens as needed.
       isTokenAutoRefreshEnabled: true,
     });
-    this.production =
-      environment.production &&
-      this.firebaseApp.options.projectId == 'quri-social';
-    this.firebaseExtensionsLoaded = [];
-    for (let x = 0; x < allFeatures.length; x++) {
-      const feature = allFeatures[x];
-      if (typeof this.firebaseApp[feature] === 'function') {
-        this.firebaseExtensionsLoaded.push(feature);
-      }
-    }
-
+    this.firebaseExtensionsLoaded = this.examineFirebaseLoadedModules();
     this.auth = getAuth();
     this.firestore = getFirestore(this.firebaseApp);
-
+    this.production = QuriApp.isProduction(firebaseApp);
     if (this.production) {
       enableProdMode();
     }
-
-    platformBrowserDynamic()
-      .bootstrapModule(AppModule)
-      .catch((err) => console.error(err));
   }
   auth: Auth;
   firestore: Firestore;
@@ -78,4 +52,21 @@ export class QuriApp implements IQuriApp {
   firebaseAppCheck: AppCheck;
   firebaseApp: FirebaseApp;
   firebaseExtensionsLoaded: string[];
+
+  private static isProduction(firebaseApp: FirebaseApp): boolean {
+    return (
+      environment.production && firebaseApp.options.projectId == 'quri-social'
+    );
+  }
+
+  private examineFirebaseLoadedModules(): Array<string> {
+    const loadedModules: Array<string> = [];
+    for (let x = 0; x < allFeatures.length; x++) {
+      const feature = allFeatures[x];
+      if (typeof this.firebaseApp[feature] === 'function') {
+        loadedModules.push(feature);
+      }
+    }
+    return loadedModules;
+  }
 }

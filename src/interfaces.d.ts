@@ -19,10 +19,6 @@ export interface IQuriApp {
   firebaseApp: FirebaseApp;
   firebaseExtensionsLoaded: Array<string>;
 }
-export interface IQuriWindow {
-  environmentIsProduction: boolean;
-  quri: IQuriApp | null;
-}
 export interface IQuriUser {
   uid: string;
   user: User;

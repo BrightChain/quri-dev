@@ -1,10 +1,12 @@
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { ConfigurationSource, environment } from './environments/environment';
-import { IConfigurationPair, IQuriWindow } from './interfaces';
+import { IConfigurationPair } from './interfaces';
+import { QuriApp } from './quriApp';
 
 declare global {
   interface Window {
-    quri: IQuriWindow;
+    quri: QuriApp | null;
+    loadQuri(): Promise<QuriApp>;
     firebase?: {
       apps: Array<FirebaseApp>;
     } | null;
@@ -56,27 +58,47 @@ export class ConfigurationHelper {
       const _firebaseHostingApp: FirebaseApp = window.firebase.apps[0];
       // if loaded app appears to have configuration we do not (eg from hosting), replace the environment copy
       if (
-        environment.firebaseConfig.apiKey === undefined ||
-        environment.firebaseConfig.apiKey == ''
+        environment.firebase.apiKey === undefined ||
+        environment.firebase.apiKey == ''
       ) {
-        environment.firebaseConfig = _firebaseHostingApp.options;
+        environment.firebase = _firebaseHostingApp.options;
       }
       return Promise.resolve(_firebaseHostingApp);
     } else if (configuration !== undefined) {
-      environment.firebaseConfig = configuration;
+      environment.firebase = configuration;
       return Promise.resolve(initializeApp(configuration));
     } else {
       return Promise.reject('failed to configure firebase');
     }
   }
+  static ConfigLooksValid(config: FirebaseOptions): boolean {
+    return (
+      config.apiKey !== undefined &&
+      config.apiKey != '' &&
+      config.authDomain !== undefined &&
+      config.authDomain != '' &&
+      config.databaseURL !== undefined &&
+      config.databaseURL != '' &&
+      config.projectId !== undefined &&
+      config.projectId != '' &&
+      config.storageBucket !== undefined &&
+      config.storageBucket != '' &&
+      config.messagingSenderId !== undefined &&
+      config.messagingSenderId != ''
+    );
+  }
   static async EnsureConfiguration(): Promise<IConfigurationPair> {
     console.debug('entering EnsureConfiguration()');
     // start with the config from environment
-    let configToUse: FirebaseOptions = environment.firebaseConfig;
+    let configToUse: FirebaseOptions = environment.firebase;
     let configSource: ConfigurationSource = ConfigurationSource.Environment;
     let method = 0;
     // if the config doesn't look like it is populated, try to get from Firebase hosting
-    while (configToUse.apiKey === undefined || configToUse.apiKey == '') {
+    while (!this.ConfigLooksValid(configToUse)) {
+      console.debug(
+        'configuration does not look valid, trying next method',
+        configSource
+      );
       try {
         switch (method) {
           case 0:
@@ -99,11 +121,17 @@ export class ConfigurationHelper {
         if (error === undefined) {
           console.debug('auto-config method failed', method);
         } else {
-          console.log(method, error);
+          console.debug(method, error);
         }
       }
       method++;
     }
+    if (!this.ConfigLooksValid(configToUse)) {
+      return Promise.reject(
+        'Unable to find a firebase configuration that looks valid'
+      );
+    }
+    console.debug('configuration looks valid, using', configSource);
     return Promise.resolve({ source: configSource, options: configToUse });
   }
 }

@@ -28,6 +28,6 @@ $ npm run test
 
 ## Serve Locally
 ```
-$ npm run start # or firebase serve
+$ npm run start # note: firebase serve does not serve the correct app without args
 # open browser as directed
 ```

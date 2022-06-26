@@ -2,35 +2,46 @@
 /// <reference types="node" />
 'use strict';
 import { QuriApp } from './quriApp';
-import { QuriWindow } from './quriWindow';
-import { ConfigurationHelper } from './configurationHelper';
-import { IQuriWindow } from './interfaces';
-import { environment } from './environments/environment';
 import { FirebaseApp } from 'firebase/app';
 
 declare global {
   interface Window {
-    quri: IQuriWindow;
+    quri: QuriApp | null;
+    loadQuri(): Promise<QuriApp>;
     firebase?: {
       apps: Array<FirebaseApp>;
     } | null;
   }
 }
 
-const _quri: QuriWindow = new QuriWindow();
-window.quri = window.quri || _quri;
+import { environment } from './environments/environment';
+import { ConfigurationHelper } from './configurationHelper';
+import { IConfigurationPair } from './interfaces';
 
-const _quriFunc = async () => {
-  console.debug('reloading quri and setting new window instance');
-  const configuration = await ConfigurationHelper.EnsureConfiguration();
-  environment.configurationSource = configuration.source;
-  const newApp = new QuriApp(
-    await ConfigurationHelper.EnsureApp(configuration.options)
+// start with environment firebase config if available
+let _firebaseConfig = environment.firebase;
+// try to get it from another source
+ConfigurationHelper.EnsureConfiguration().then((config: IConfigurationPair) => {
+  _firebaseConfig = config.options;
+  environment.firebase = config.options;
+  environment.configurationSource = config.source;
+});
+if (_firebaseConfig === null) {
+  throw new Error('Firebase configuration not found');
+}
+
+export async function loadQueri(): Promise<QuriApp> {
+  return Promise.resolve(
+    new QuriApp(await ConfigurationHelper.EnsureApp(_firebaseConfig))
   );
-  _quri.quri = newApp;
-  window.quri = _quri;
-};
+}
 
-document.addEventListener('DOMContentLoaded', _quriFunc);
+window.quri = null;
+window.loadQuri = window.loadQuri || loadQueri;
 
-export default { quri: _quri };
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
+
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .catch((err) => console.error(err));
