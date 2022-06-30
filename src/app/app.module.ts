@@ -72,16 +72,16 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   imports: [
     BrowserModule,
-    FormsModule,
     AppRoutingModule,
-    ReactiveFormsModule,
-    HttpClientModule,
+    BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule, // firestore
-    AngularFireAuthModule, // auth
+    //AngularFireAuthModule, // auth
     AngularFireStorageModule, // storage
     AngularFireDatabaseModule,
-    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
     MatAutocompleteModule,
     MatBadgeModule,
     MatButtonModule,
