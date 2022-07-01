@@ -49,15 +49,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+
+import { provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getStorage, provideStorage } from '@angular/fire/storage';
+import { provideFunctions, getFunctions } from '@angular/fire/functions';
+
+import { getAnalytics, provideAnalytics } from '@angular/fire/analytics';
+
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
 import { HttpClientModule } from '@angular/common/http';
+import { ConfigurationHelper } from 'src/configurationHelper';
 
 @NgModule({
   declarations: [
@@ -74,11 +79,28 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule, // firestore
-    //AngularFireAuthModule, // auth
-    AngularFireStorageModule, // storage
-    AngularFireDatabaseModule,
+    provideAnalytics(() => getAnalytics()),
+    provideFirebaseApp(() =>
+      ConfigurationHelper.EnsureApp(environment.firebase)
+    ),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      //connectFirestoreEmulator(firestore, 'localhost', 8080);
+      return firestore;
+    }),
+    provideAuth(() => {
+      const auth = getAuth();
+      //connectAuthEmulator(auth, 'http://localhost:9099');
+      return auth;
+    }),
+    provideStorage(() => {
+      const storage = getStorage();
+      return storage;
+    }),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      return functions;
+    }),
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

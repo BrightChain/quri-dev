@@ -32,7 +32,7 @@ if (_firebaseConfig === null) {
 
 export async function loadQueri(): Promise<QuriApp> {
   return Promise.resolve(
-    new QuriApp(await ConfigurationHelper.EnsureApp(_firebaseConfig))
+    new QuriApp(ConfigurationHelper.EnsureApp(_firebaseConfig))
   );
 }
 

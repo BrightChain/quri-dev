@@ -14,7 +14,7 @@ declare global {
 }
 
 export class ConfigurationHelper {
-  static async GetConfigFromRunningApp(): Promise<FirebaseOptions> {
+  static GetConfigFromRunningApp(): FirebaseOptions {
     if (
       window.firebase !== undefined &&
       window.firebase !== null &&
@@ -25,10 +25,10 @@ export class ConfigurationHelper {
     ) {
       const _firebaseHostingApp: FirebaseApp = window.firebase.apps[0];
       if (_firebaseHostingApp.options !== undefined) {
-        return Promise.resolve(_firebaseHostingApp.options);
+        return _firebaseHostingApp.options;
       }
     }
-    return Promise.reject();
+    throw new Error('failed to get config from running app');
   }
   static async GetConfigFromHosting(): Promise<FirebaseOptions> {
     const firebaseHostingMagicConfigUrl = '/__/firebase/init.json';
@@ -44,9 +44,7 @@ export class ConfigurationHelper {
     }
     return Promise.resolve(result);
   }
-  static async EnsureApp(
-    configuration?: FirebaseOptions
-  ): Promise<FirebaseApp> {
+  static EnsureApp(configuration?: FirebaseOptions): FirebaseApp {
     if (
       window.firebase !== undefined &&
       window.firebase !== null &&
@@ -63,12 +61,12 @@ export class ConfigurationHelper {
       ) {
         environment.firebase = _firebaseHostingApp.options;
       }
-      return Promise.resolve(_firebaseHostingApp);
+      return _firebaseHostingApp;
     } else if (configuration !== undefined) {
       environment.firebase = configuration;
-      return Promise.resolve(initializeApp(configuration));
+      return initializeApp(configuration);
     } else {
-      return Promise.reject('failed to configure firebase');
+      throw new Error('failed to configure firebase');
     }
   }
   static ConfigLooksValid(config: FirebaseOptions): boolean {
@@ -104,7 +102,7 @@ export class ConfigurationHelper {
           case 0:
             // try running app
             // see if we can get it out of a firebase app instance (hosting init.js)
-            configToUse = await ConfigurationHelper.GetConfigFromRunningApp();
+            configToUse = ConfigurationHelper.GetConfigFromRunningApp();
             configSource = ConfigurationSource.FirebaseHostingApp;
             break;
           case 1:

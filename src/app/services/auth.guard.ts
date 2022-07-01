@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
@@ -8,13 +9,11 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private afAuth: AngularFireAuth) {}
+  constructor(private router: Router, private afAuth: Auth) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,

@@ -1,11 +1,8 @@
 import { ConstantPool } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
+import { Firestore } from '@angular/fire/firestore';
 
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-} from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -17,8 +14,8 @@ export class AdminDashboardComponent implements OnInit {
   user: Observable<any> | null; // Example: store the user's info here (Cloud Firestore: collection is 'users', docId is the user's email, lower case)
 
   constructor(
-    private afAuth: AngularFireAuth,
-    private firestore: AngularFirestore
+    private afAuth: Auth,
+    private firestore: Firestore
   ) {
     this.user = null;
   }
