@@ -1,5 +1,10 @@
 #!/bin/bash
 currentDir=$(pwd)
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+if [[ "${currentDir}" != "${SCRIPT_DIR}" ]]; then
+  cd "${SCRIPT_DIR}"
+fi
+
 if [[ "$projectId" == "" ]]; then
 	echo "Input projectId:"
 	read projectId
@@ -8,6 +13,7 @@ if [[ "$projectId" == "" ]]; then
 fi
 echo "Running ${0} for project ${projectId} from ${currentDir}"
 
+git update-index --assume-unchanged src/environments/environment.*.ts
 
 echo "Making src/firebaseAppCheckConfig.ts"
 #APP_CHECK_CONFIG="export const firebaseAppCheckConfig = {\\n  siteKey: '${firebaseAppCheckKey}',\\n};"
@@ -23,3 +29,4 @@ cat firebase.json.t | sed "s/__FIREBASE_SITE__/${projectId}/" > firebase.json
 echo ""
 echo "Done."
 echo ""
+cd "${currentDir}"
