@@ -115,9 +115,7 @@ const allFeatures: Array<string> = [
           'provideFirebaseApp must be called before provideAppCheck'
         );
       }
-      if (!environment.production) {
-        (<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-      }
+      (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = !environment.production;
       const appCheck: AppCheck = initializeAppCheck(_appRef, {
         provider: new ReCaptchaV3Provider(firebaseAppCheckConfig.siteKey),
         isTokenAutoRefreshEnabled: true,
@@ -141,6 +139,15 @@ const allFeatures: Array<string> = [
     provideFunctions(() => {
       const functions = getFunctions();
       return functions;
+    }),
+    provideAnalytics(() => {
+      if (_appRef === null) {
+        throw new Error(
+          'provideFirebaseApp must be called before provideAppCheck'
+        );
+      }
+      const analytics = getAnalytics(_appRef);
+      return analytics;
     }),
     FormsModule,
     ReactiveFormsModule,
