@@ -115,7 +115,9 @@ const allFeatures: Array<string> = [
           'provideFirebaseApp must be called before provideAppCheck'
         );
       }
-      (<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      if (!environment.production) {
+        (<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      }
       const appCheck: AppCheck = initializeAppCheck(_appRef, {
         provider: new ReCaptchaV3Provider(firebaseAppCheckConfig.siteKey),
         isTokenAutoRefreshEnabled: true,
