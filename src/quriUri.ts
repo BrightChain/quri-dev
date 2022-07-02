@@ -2,11 +2,11 @@
 /// <reference types="node" />
 'use strict';
 import { IQuriUri } from './interfaces';
-import { QuriApp } from './quriApp';
 import { createHash } from 'crypto';
 import {
   collection,
   doc,
+  Firestore,
   serverTimestamp,
   setDoc,
   Timestamp,
@@ -49,8 +49,8 @@ export class QuriUri implements IQuriUri {
   async getScore(): Promise<bigint> {
     throw new Error('Method not implemented.');
   }
-  async save(quri: QuriApp): Promise<void> {
-    const urisRef = collection(quri.firestore, 'uris');
+  async save(firestore: Firestore): Promise<void> {
+    const urisRef = collection(firestore, 'uris');
 
     await setDoc(doc(urisRef, this.hash), this);
   }

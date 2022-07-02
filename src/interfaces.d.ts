@@ -11,21 +11,13 @@ export interface IConfigurationPair {
 export interface IFirebaseAppCheckConfig {
   siteKey: string;
 }
-export interface IQuriApp {
-  auth: Auth;
-  firestore: Firestore;
-  production: boolean;
-  firebaseAppCheck: AppCheck;
-  firebaseApp: FirebaseApp;
-  firebaseExtensionsLoaded: Array<string>;
-}
 export interface IQuriUser {
   uid: string;
   user: User;
   profile: IQuriUserProfile;
   ratingsQuery(): Query;
-  static getUser(quri: QuriApp, id: string): Promise<IQuriUser>;
-  static rateUri(quri: QuriApp, uri: IQuriUri): Promise<IQuriRating>;
+  static getUser(id: string): Promise<IQuriUser>;
+  static rateUri(uri: IQuriUri): Promise<IQuriRating>;
 }
 export interface IQuriUri {
   uri: URL;
@@ -37,6 +29,7 @@ export interface IQuriUri {
     autoCreate: boolean | undefined
   ): Promise<IQuriUri | null>;
   getScore(): Promise<bigint>;
+  save(firestore: Firestore): Promise<void>;
   validate(): boolean;
   static hashUrl(uri: URL): string;
 }
@@ -75,6 +68,6 @@ export interface IQuriUserProfile {
   photoURL: string | null;
   user(): User;
   addLink(link: URL);
-  updateProfile(quri: QuriApp): Promise<void>;
+  updateProfile(firestore: Firestore): Promise<void>;
   updateLastSeen();
 }

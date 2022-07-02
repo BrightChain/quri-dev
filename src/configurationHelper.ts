@@ -1,12 +1,11 @@
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
+import { AppModule } from './app/app.module';
 import { ConfigurationSource, environment } from './environments/environment';
 import { IConfigurationPair } from './interfaces';
-import { QuriApp } from './quriApp';
 
 declare global {
   interface Window {
-    quri: QuriApp | null;
-    loadQuri(): Promise<QuriApp>;
+    quri: AppModule | null;
     firebase?: {
       apps: Array<FirebaseApp>;
     } | null;

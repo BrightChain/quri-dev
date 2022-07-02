@@ -74,6 +74,17 @@ import { FirebaseApp } from 'firebase/app';
 
 let _appRef: FirebaseApp | null = null;
 
+const allFeatures: Array<string> = [
+  'auth',
+  'database',
+  'firestore',
+  'functions',
+  'messaging',
+  'storage',
+  'analytics',
+  'remoteConfig',
+  'performance',
+];
 @NgModule({
   declarations: [
     AppComponent,
@@ -94,6 +105,7 @@ let _appRef: FirebaseApp | null = null;
       console.debug('provideFirebaseApp');
       const configPair = ConfigurationHelper.EnsureConfiguration();
       const app = initializeApp(configPair.options);
+      environment.firebase = configPair.options;
       _appRef = app;
       return app;
     }),
@@ -175,4 +187,35 @@ let _appRef: FirebaseApp | null = null;
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  private static _instance: AppModule | null = null;
+  production: boolean;
+  constructor() {
+    if (AppModule._instance !== null) {
+      throw new Error('AppModule is a singleton and is already loaded');
+    }
+    AppModule._instance = this;
+    this.production =
+      environment.production && environment.firebase.projectId == 'quri-social';
+  }
+
+  public static getInstance(): AppModule {
+    if (AppModule._instance === null) {
+      throw new Error('AppModule must be initialized before use');
+    }
+    return AppModule._instance;
+  }
+
+  private static examineFirebaseLoadedModules(
+    firebaseApp: FirebaseApp
+  ): Array<string> {
+    const loadedModules: Array<string> = [];
+    for (let x = 0; x < allFeatures.length; x++) {
+      const feature = allFeatures[x];
+      if (typeof firebaseApp[feature] === 'function') {
+        loadedModules.push(feature);
+      }
+    }
+    return loadedModules;
+  }
+}

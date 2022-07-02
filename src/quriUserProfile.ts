@@ -2,6 +2,7 @@ import { User } from 'firebase/auth';
 import {
   collection,
   doc,
+  Firestore,
   getDoc,
   serverTimestamp,
   setDoc,
@@ -9,7 +10,6 @@ import {
 } from 'firebase/firestore';
 import { URL } from 'url';
 import { IQuriUserProfile } from './interfaces';
-import { QuriApp } from './quriApp';
 
 export class QuriUserProfile implements IQuriUserProfile {
   public avatar: URL | null;
@@ -56,24 +56,24 @@ export class QuriUserProfile implements IQuriUserProfile {
     this.links.push(link);
     this.dirty = true;
   }
-  async updateProfile(quri: QuriApp): Promise<void> {
+  async updateProfile(firestore: Firestore): Promise<void> {
     if (!this.dirty) {
       return Promise.resolve();
     }
     this.dateModified = serverTimestamp() as Timestamp;
-    const profilesRef = collection(quri.firestore, 'profiles');
+    const profilesRef = collection(firestore, 'profiles');
 
     await setDoc(doc(profilesRef, this.uid), this);
     return Promise.resolve();
   }
   static async getProfile(
-    quri: QuriApp,
+    firestore: Firestore,
     uid: string
   ): Promise<QuriUserProfile> {
     if (uid === null || uid === undefined) {
       return Promise.reject('uid is null');
     }
-    const profilesRef = collection(quri.firestore, 'profiles');
+    const profilesRef = collection(firestore, 'profiles');
     const snapshot = await getDoc(doc(profilesRef, uid));
     // TODO: if no profile, create one
     return Promise.resolve(snapshot.data() as QuriUserProfile);
