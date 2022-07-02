@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { VirtualTimeScheduler } from 'rxjs';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-verify-email',
@@ -20,7 +20,7 @@ export class VerifyEmailComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    public afAuth: AngularFireAuth
+    public afAuth: Auth
   ) {
     this.email = '';
     this.mailSent = false;
@@ -30,7 +30,7 @@ export class VerifyEmailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.afAuth.authState.subscribe((user) => {
+    this.afAuth.onAuthStateChanged((user) => {
       // if the user is logged in, update the form value with their email address
       if (user !== null && user.email !== null) {
         this.email = user.email;
@@ -44,16 +44,16 @@ export class VerifyEmailComponent implements OnInit {
   resendVerificationEmail() {
     this.isProgressVisible = true; // show the progress indicator as we start the Firebase password reset process
 
-    this.authService.resendVerificationEmail().then((result) => {
-      this.isProgressVisible = false; // no matter what, when the auth service returns, we hide the progress indicator
-      if (result == null) {
-        // null is success, false means there was an error
+    this.authService
+      .resendVerificationEmail()
+      .then(() => {
+        this.isProgressVisible = false; // no matter what, when the auth service returns, we hide the progress indicator
         console.log('verification email resent...');
         this.mailSent = true;
-      } else if (result.isValid == false) {
-        console.log('verification error', result);
-        this.firebaseErrorMessage = result.message;
-      }
-    });
+      })
+      .catch((error) => {
+        console.log('verification error', error);
+        this.mailSent = false;
+      });
   }
 }

@@ -50,8 +50,14 @@ import { MatTreeModule } from '@angular/material/tree';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { provideFirebaseApp } from '@angular/fire/app';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import {
+  AppCheck,
+  initializeAppCheck,
+  provideAppCheck,
+  ReCaptchaV3Provider,
+} from '@angular/fire/app-check';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideFunctions, getFunctions } from '@angular/fire/functions';
@@ -63,6 +69,10 @@ import { environment } from '../environments/environment';
 
 import { HttpClientModule } from '@angular/common/http';
 import { ConfigurationHelper } from 'src/configurationHelper';
+import { firebaseAppCheckConfig } from 'src/firebaseAppCheckConfig';
+import { FirebaseApp } from 'firebase/app';
+
+let _appRef: FirebaseApp | null = null;
 
 @NgModule({
   declarations: [
@@ -80,9 +90,26 @@ import { ConfigurationHelper } from 'src/configurationHelper';
     AppRoutingModule,
     BrowserAnimationsModule,
     provideAnalytics(() => getAnalytics()),
-    provideFirebaseApp(() =>
-      ConfigurationHelper.EnsureApp(environment.firebase)
-    ),
+    provideFirebaseApp(() => {
+      console.debug('provideFirebaseApp');
+      const configPair = ConfigurationHelper.EnsureConfiguration();
+      const app = initializeApp(configPair.options);
+      _appRef = app;
+      return app;
+    }),
+    provideAppCheck((): AppCheck => {
+      if (_appRef === null) {
+        throw new Error(
+          'provideFirebaseApp must be called before provideAppCheck'
+        );
+      }
+      (<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      const appCheck: AppCheck = initializeAppCheck(_appRef, {
+        provider: new ReCaptchaV3Provider(firebaseAppCheckConfig.siteKey),
+        isTokenAutoRefreshEnabled: true,
+      });
+      return appCheck;
+    }),
     provideFirestore(() => {
       const firestore = getFirestore();
       //connectFirestoreEmulator(firestore, 'localhost', 8080);

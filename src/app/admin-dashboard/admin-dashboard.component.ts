@@ -1,9 +1,12 @@
 import { ConstantPool } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
+import { QuriUserProfile } from 'src/quriUserProfile';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -11,26 +14,27 @@ import { Observable } from 'rxjs';
   styleUrls: ['./admin-dashboard.component.css'],
 })
 export class AdminDashboardComponent implements OnInit {
-  user: Observable<any> | null; // Example: store the user's info here (Cloud Firestore: collection is 'users', docId is the user's email, lower case)
+  user$: Observable<User | null> | undefined;
+  profile$: Observable<QuriUserProfile | null> | undefined;
 
   constructor(
     private afAuth: Auth,
-    private firestore: Firestore
-  ) {
-    this.user = null;
-  }
+    private firestore: Firestore,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.afAuth.authState.subscribe((user) => {
-      // grab the user object from Firebase Authorization
+    onAuthStateChanged(this.afAuth, (user: User | null) => {
+      this.user$ = this.authService.user$;
+      this.profile$ = this.authService.profile$;
       if (user !== null && user.email !== null) {
-        const emailLower = user.email.toLowerCase();
-        this.user = this.firestore
-          .collection('users')
-          .doc(emailLower)
-          .valueChanges(); // get the user's doc in Cloud Firestore
+        console.log('Admin Dashboard: user', user);
       } else {
-        console.log('Dashboard: user is null');
+        console.log('Admin Dashboard: user is null');
+      }
+      if (!this.authService.isAdmin()) {
+        this.router.navigate(['/']);
       }
     });
   }

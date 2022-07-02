@@ -21,11 +21,10 @@ import { IConfigurationPair } from './interfaces';
 // start with environment firebase config if available
 let _firebaseConfig = environment.firebase;
 // try to get it from another source
-ConfigurationHelper.EnsureConfiguration().then((config: IConfigurationPair) => {
-  _firebaseConfig = config.options;
-  environment.firebase = config.options;
-  environment.configurationSource = config.source;
-});
+const config: IConfigurationPair = ConfigurationHelper.EnsureConfiguration();
+_firebaseConfig = config.options;
+environment.firebase = config.options;
+environment.configurationSource = config.source;
 if (_firebaseConfig === null) {
   throw new Error('Firebase configuration not found');
 }

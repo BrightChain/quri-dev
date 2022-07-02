@@ -26,7 +26,13 @@
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "paths": {
+      "crypto":["node_modules/crypto-browserify"],
+      "https":["node_modules/htt[s-browserify"],
+      "os":["node_modules/os-browserify"],
+      "stream": [ "./node_modules/stream-browserify" ]
+    },
   },
   "typeRoots": [ "types" ],
   "typingOptions": {

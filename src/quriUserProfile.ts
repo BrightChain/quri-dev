@@ -8,7 +8,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { URL } from 'url';
-import { IQuriUser, IQuriUserProfile } from './interfaces';
+import { IQuriUserProfile } from './interfaces';
 import { QuriApp } from './quriApp';
 
 export class QuriUserProfile implements IQuriUserProfile {
@@ -17,23 +17,36 @@ export class QuriUserProfile implements IQuriUserProfile {
   public dateCreated: Timestamp;
   public dateModified: Timestamp;
   public dirty: boolean;
+  public emails: Array<string>;
   public isLoggedIn: boolean;
   public lastSeen: Timestamp;
   public links: Array<URL>;
   public uid: string;
-  public user: User;
+  private _user: User;
+  public user(): User {
+    return this._user;
+  }
+  public displayName: string | null;
+  public email: string | null;
+  public phones: Array<string>;
+  public photoURL: string | null;
 
   constructor(user: User) {
     this.avatar = null;
     this.bio = null;
-    this.dirty = true;
     this.dateCreated = serverTimestamp() as Timestamp;
     this.dateModified = serverTimestamp() as Timestamp;
+    this.dirty = true;
+    this.displayName = user.displayName || null;
+    this.email = user.email || null;
+    this.emails = user.email ? [user.email] : [];
     this.isLoggedIn = false;
     this.lastSeen = serverTimestamp() as Timestamp;
     this.links = [];
     this.uid = user.uid;
-    this.user = user;
+    this._user = user;
+    this.phones = [];
+    this.photoURL = null;
   }
   updateLastSeen() {
     this.lastSeen = serverTimestamp() as Timestamp;

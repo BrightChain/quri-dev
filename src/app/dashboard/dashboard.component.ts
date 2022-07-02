@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
 import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-} from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+  collection,
+  CollectionReference,
+  doc,
+  docData,
+  DocumentData,
+  Firestore,
+} from '@angular/fire/firestore';
+import { AuthService } from '../services/auth.service';
+
+import { Observable, of } from 'rxjs';
+import { QuriUserProfile } from 'src/quriUserProfile';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,31 +19,29 @@ import { Observable } from 'rxjs';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  user: Observable<any> | null; // Example: store the user's info here (Cloud Firestore: collection is 'users', docId is the user's email, lower case)
+  user$: Observable<User | null> | undefined;
+  profile$: Observable<QuriUserProfile | null> | undefined;
 
   constructor(
-    private afAuth: AngularFireAuth,
-    private firestore: AngularFirestore
+    private afAuth: Auth,
+    private firestore: Firestore,
+    private authService: AuthService
   ) {
     this.afAuth = afAuth;
     this.firestore = firestore;
-    this.user = null;
+    this.authService = authService;
   }
 
-  afAuthUser(): Observable<any> {
-    return this.afAuth.user;
+  afAuthUser(): Observable<User | null> {
+    return this.authService.user$ || of(null);
   }
 
   ngOnInit(): void {
-    this.afAuth.authState.subscribe((user) => {
-      console.log('Dashboard: user', user);
-
+    onAuthStateChanged(this.afAuth, (user: User | null) => {
+      this.user$ = this.authService.user$;
+      this.profile$ = this.authService.profile$;
       if (user !== null && user.email !== null) {
-        const emailLower = user.email.toLowerCase();
-        this.user = this.firestore
-          .collection('users')
-          .doc(emailLower)
-          .valueChanges();
+        console.log('Dashboard: user', user);
       } else {
         console.log('Dashboard: user is null');
       }

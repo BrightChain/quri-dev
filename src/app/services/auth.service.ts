@@ -9,6 +9,12 @@ import {
   sendEmailVerification,
   UserCredential,
   sendPasswordResetEmail,
+  onAuthStateChanged,
+  User,
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
+  UserInfo,
 } from '@angular/fire/auth';
 import {
   collection,
@@ -36,14 +42,33 @@ import {
 } from '@angular/fire/storage';
 
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { QuriUserProfile } from '../../quriUserProfile';
 import { QuriUser } from '../../quriUser';
+import { environment } from '../../environments/environment';
+import * as jwt from 'jsonwebtoken';
+import { getIdToken } from 'firebase/auth';
 
+//// <summary>
+//// The URL of the JWKS endpoint.
+//// </summary>
+export const FirebaseJwksUrl =
+  'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   userLoggedIn: boolean; // other components can check on this variable for the login status of the user
+  user$: Observable<User | null> | undefined;
+  profile$: Observable<QuriUserProfile | null> | undefined;
+  private tokenValidated: boolean;
+  public isValidated() {
+    return this.tokenValidated;
+  }
+  private isAdministrator: boolean;
+  public isAdmin() {
+    return this.isAdministrator;
+  }
 
   constructor(
     private router: Router,
@@ -54,15 +79,82 @@ export class AuthService {
     this.afs = afs;
     this.router = router;
     this.userLoggedIn = false;
+    this.tokenValidated = false;
+    this.isAdministrator = false;
 
-    this.afAuth.onAuthStateChanged((user) => {
+    onAuthStateChanged(this.afAuth, async (user: User | null) => {
       // set up a subscription to always know the login status of the user
+      console.log('Auth Service: onAuthStateChanged: user', user);
       if (user) {
         this.userLoggedIn = true;
+        const userDoc = doc(this.afs, `users/${user.uid}`);
+        this.user$ = docData(userDoc) as Observable<User>;
+
+        const profileDoc = doc(this.afs, `profiles/${user.uid}`);
+        this.profile$ = docData(profileDoc) as Observable<QuriUserProfile>;
+
+        const token = await user.getIdToken();
+        console.debug('Auth Service: onAuthStateChanged: validating token');
+        await this.validateToken(token)
+          .then((validationResult) => {
+            this.tokenValidated = true;
+            const role =
+              typeof validationResult === 'object' &&
+              validationResult['role'] !== undefined
+                ? validationResult['role']
+                : 'endUser';
+            this.isAdministrator = role.toLowerCase() === 'admin';
+            return token;
+          })
+          .catch(() => {
+            this.tokenValidated = false;
+            this.isAdministrator = false;
+            return token;
+          });
+
+        if (!this.tokenValidated) {
+          console.error('Auth Service: onAuthStateChanged: token is invalid');
+          this.logoutUser();
+        }
       } else {
         this.userLoggedIn = false;
+        this.user$ = of(null);
+        this.profile$ = of(null);
+        this.tokenValidated = false;
       }
     });
+  }
+
+  async verifyJwt(idToken: string): Promise<string | jwt.JwtPayload> {
+    const response: Response = await fetch(FirebaseJwksUrl);
+    if (response === undefined) {
+      console.log('Auth Service: verifyJwt: response is undefined');
+      return Promise.reject('response is undefined');
+    }
+    const publicKeys = JSON.parse(await response.text());
+    try {
+      const header64 = idToken.split('.')[0];
+      const header = JSON.parse(atob(header64));
+      return Promise.resolve(
+        jwt.verify(idToken, publicKeys[header.kid], {
+          algorithms: ['RS256'],
+        })
+      );
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async validateToken(jwt: string): Promise<string | jwt.JwtPayload> {
+    console.debug('Auth Service: validateToken: jwt');
+    try {
+      const result = await this.verifyJwt(jwt);
+      console.debug('Auth Service: validateToken: result', result);
+      return Promise.resolve(result);
+    } catch (error) {
+      console.debug('Auth Service: validateToken: error', error);
+      return Promise.reject(error);
+    }
   }
 
   async loginUser(email: string, password: string): Promise<any> {
@@ -80,6 +172,18 @@ export class AuthService {
       });
   }
 
+  async googleSignIn() {
+    const provider = new GoogleAuthProvider();
+    console.log(provider);
+    await signInWithRedirect(this.afAuth, provider);
+
+    const result = await getRedirectResult(this.afAuth);
+    console.log(result);
+    return this.updateUserData(result);
+  }
+  // const credential = await this.afAuth.signInWithPopup(provider);
+  // return this.updateUserData(credential.user);
+
   async signupUser(user: any): Promise<any> {
     return await createUserWithEmailAndPassword(
       this.afAuth,
@@ -92,18 +196,11 @@ export class AuthService {
             'Auth Service: signupUser: user is undefined or null'
           );
         }
-        const emailLower = user.email.toLowerCase();
-
-        const d = await doc(this.afs, '/users/' + emailLower); // on a successful signup, create a document in 'users' collection with the new user's info
-        setDoc(d, {
-          accountType: 'endUser',
-          displayName: user.displayName,
-          displayName_lower: user.displayName.toLowerCase(),
-          email: user.email,
-          email_lower: emailLower,
-        });
+        this.updateUserData(result); // on a successful signup, create a document in 'users' collection with the new user's info
+        this.updateUserProfile(result.user, new QuriUserProfile(result.user));
 
         await sendEmailVerification(result.user); // immediately send the user a verification email
+        return Promise.resolve();
       })
       .catch((error) => {
         console.log('Auth Service: signup error', error);
@@ -126,24 +223,26 @@ export class AuthService {
       });
   }
 
-  async resendVerificationEmail() {
+  async resendVerificationEmail(): Promise<boolean> {
     if (this.afAuth === null) {
-      return false;
+      return Promise.resolve(false);
     }
     const afAuthUser = await this.afAuth.currentUser;
     if (afAuthUser === null) {
-      return false;
+      return Promise.resolve(false);
     }
     // verification email is sent in the Sign Up function, but if you need to resend, call this function
-    sendEmailVerification(afAuthUser)
+    return sendEmailVerification(afAuthUser)
       .then(() => {
         // this.router.navigate(['home']);
+        return Promise.resolve(true);
       })
       .catch((error) => {
         console.log('Auth Service: sendVerificationEmail error...');
         console.log('error code', error.code);
         console.log('error', error);
-        if (error.code) return error;
+        if (error.code) return Promise.reject(error);
+        return Promise.reject();
       });
   }
 
@@ -160,6 +259,12 @@ export class AuthService {
         if (error.code) return error;
       });
   }
+
+  // async signOut() {
+  //   await this.afAuth.signOut();
+  //   return this.router.navigate(['/']);
+  // }
+
   async setUserInfo(payload: object) {
     console.log('Auth Service: saving user info...');
     if (
@@ -169,13 +274,31 @@ export class AuthService {
     ) {
       return false;
     }
-    const emailLower = this.afAuth.currentUser.email.toLowerCase();
-    const d = await doc(this.afs, '/users/' + emailLower);
-    //const col = collection(this.afs, 'users') as CollectionReference<QuriUser>;
-    setDoc(d, payload).then(function (res) {
+    const userPayload = payload as User;
+    const userRef = doc(this.afs, `users/${userPayload.uid}`);
+    return setDoc(userRef, userPayload, { merge: true }).then(function (res) {
       console.log('Auth Service: setUserInfo response...');
       console.log(res);
     });
+  }
+
+  private updateUserData(user: UserCredential | null) {
+    const userRef = doc(this.afs, `users/${user?.user.uid}`);
+    const data: UserInfo = {
+      displayName: user?.user.displayName || null,
+      email: user?.user.email || null,
+      phoneNumber: user?.user.phoneNumber || null,
+      photoURL: user?.user.photoURL || null,
+      providerId: user?.user.providerId || '',
+      uid: user?.user.uid || '',
+    };
+    return setDoc(userRef, data as User, { merge: true });
+  }
+
+  private updateUserProfile(user: User, profile: QuriUserProfile) {
+    const profileRef = doc(this.afs, `profiles/${user.uid}`);
+    //const data: QuriUserProfile = new QuriUserProfile(user);
+    return setDoc(profileRef, profile, { merge: true });
   }
 
   getCurrentUser() {

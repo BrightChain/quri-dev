@@ -30,19 +30,27 @@ export class ConfigurationHelper {
     }
     throw new Error('failed to get config from running app');
   }
-  static async GetConfigFromHosting(): Promise<FirebaseOptions> {
+  static GetConfigFromHosting(): FirebaseOptions {
     const firebaseHostingMagicConfigUrl = '/__/firebase/init.json';
     let result: FirebaseOptions | null = null;
-    await fetch(firebaseHostingMagicConfigUrl).then(async (response) => {
-      const jsonText: string = await response.text();
-      result = JSON.parse(jsonText);
+    let caughtError = null;
+    Promise.resolve(async () => {
+      fetch(firebaseHostingMagicConfigUrl)
+        .then(async (response) => {
+          const jsonText: string = await response.text();
+          result = JSON.parse(jsonText) as FirebaseOptions;
+        })
+        .catch((error) => {
+          caughtError = error;
+        });
     });
     if (result === null) {
-      return Promise.reject(
-        'Unable to fetch and parse configuration from Firebase Hosting'
-      );
+      const errText =
+        'Unable to fetch and parse configuration from Firebase Hosting';
+      console.error(errText, caughtError);
+      throw new Error(errText);
     }
-    return Promise.resolve(result);
+    return result;
   }
   static EnsureApp(configuration?: FirebaseOptions): FirebaseApp {
     if (
@@ -85,7 +93,7 @@ export class ConfigurationHelper {
       config.messagingSenderId != ''
     );
   }
-  static async EnsureConfiguration(): Promise<IConfigurationPair> {
+  static EnsureConfiguration(): IConfigurationPair {
     console.debug('entering EnsureConfiguration()');
     // start with the config from environment
     let configToUse: FirebaseOptions = environment.firebase;
@@ -107,11 +115,11 @@ export class ConfigurationHelper {
             break;
           case 1:
             // directly try to access hosting init.js config
-            configToUse = await ConfigurationHelper.GetConfigFromHosting();
+            configToUse = ConfigurationHelper.GetConfigFromHosting();
             configSource = ConfigurationSource.FirebaseHosting;
             break;
           default:
-            return Promise.reject(
+            throw new Error(
               'Unable to find a firebase configuration that looks valid'
             );
         }
@@ -125,11 +133,11 @@ export class ConfigurationHelper {
       method++;
     }
     if (!this.ConfigLooksValid(configToUse)) {
-      return Promise.reject(
+      throw new Error(
         'Unable to find a firebase configuration that looks valid'
       );
     }
     console.debug('configuration looks valid, using', configSource);
-    return Promise.resolve({ source: configSource, options: configToUse });
+    return { source: configSource, options: configToUse };
   }
 }

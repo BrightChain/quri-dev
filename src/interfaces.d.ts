@@ -68,7 +68,12 @@ export interface IQuriUserProfile {
   lastSeen: Timestamp;
   links: Array<URL>;
   uid: string;
-  user: User;
+  displayName: string | null;
+  email: string | null;
+  emails: Array<string>;
+  phones: Array<string>;
+  photoURL: string | null;
+  user(): User;
   addLink(link: URL);
   updateProfile(quri: QuriApp): Promise<void>;
   updateLastSeen();

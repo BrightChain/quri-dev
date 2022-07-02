@@ -17,6 +17,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "buffer",
+              "crypto",
+              "https",
+              "uuid",
+              "os",
+              "stream"
+            ],
             "outputPath": "public",
             "index": "src/index.html",
             "main": "src/index.ts",
