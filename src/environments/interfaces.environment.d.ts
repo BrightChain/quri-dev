@@ -13,6 +13,7 @@ export interface IEnvironment {
 export interface ILogEntry {
   id: string;
   level: string;
+  localTime: Date;
   time: Timestamp;
   args: Array<object>;
 }

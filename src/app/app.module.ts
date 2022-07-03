@@ -79,6 +79,16 @@ import { firebaseAppCheckConfig } from 'src/firebaseAppCheckConfig';
 import { FirebaseApp } from 'firebase/app';
 
 let _appRef: FirebaseApp | null = null;
+const _getAppRef = (): FirebaseApp => {
+  if (_appRef !== null) {
+    return _appRef;
+  }
+  const configPair = ConfigurationHelper.EnsureConfiguration();
+  const app = initializeApp(configPair.options);
+  environment.firebase = configPair.options;
+  _appRef = app;
+  return app;
+};
 
 const allFeatures: Array<string> = [
   'auth',
@@ -116,13 +126,8 @@ const allFeatures: Array<string> = [
       return app;
     }),
     provideAppCheck((): AppCheck => {
-      if (_appRef === null) {
-        throw new Error(
-          'provideFirebaseApp must be called before provideAppCheck'
-        );
-      }
       (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = !environment.production;
-      const appCheck: AppCheck = initializeAppCheck(_appRef, {
+      const appCheck: AppCheck = initializeAppCheck(_getAppRef(), {
         provider: new ReCaptchaV3Provider(firebaseAppCheckConfig.siteKey),
         isTokenAutoRefreshEnabled: true,
       });
@@ -130,6 +135,7 @@ const allFeatures: Array<string> = [
     }),
     provideFirestore(() => {
       const firestore = getFirestore();
+      LoggingService.Initialize(firestore, environment.production);
       //connectFirestoreEmulator(firestore, 'localhost', 8080);
       return firestore;
     }),
@@ -147,12 +153,7 @@ const allFeatures: Array<string> = [
       return functions;
     }),
     provideAnalytics(() => {
-      if (_appRef === null) {
-        throw new Error(
-          'provideFirebaseApp must be called before provideAppCheck'
-        );
-      }
-      const analytics = getAnalytics(_appRef);
+      const analytics = getAnalytics(_getAppRef());
       return analytics;
     }),
     FormsModule,
@@ -204,15 +205,11 @@ const allFeatures: Array<string> = [
 })
 export class AppModule {
   private static _instance: AppModule | null = null;
-  production: boolean;
   constructor() {
     if (AppModule._instance !== null) {
       throw new Error('AppModule is a singleton and is already loaded');
     }
     AppModule._instance = this;
-    this.production =
-      environment.production && environment.firebase.projectId == 'quri-social';
-    LoggingService.Initialize(this.production);
   }
 
   public static getInstance(): AppModule {
