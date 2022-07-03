@@ -29,9 +29,9 @@ export class AdminDashboardComponent implements OnInit {
       this.user$ = this.authService.user$;
       this.profile$ = this.authService.profile$;
       if (user !== null && user.email !== null) {
-        console.log('Admin Dashboard: user', user);
+        //console.log('Admin Dashboard: user', user);
       } else {
-        console.log('Admin Dashboard: user is null');
+        //console.log('Admin Dashboard: user is null');
       }
       if (!this.authService.isAdmin()) {
         this.router.navigate(['/']);

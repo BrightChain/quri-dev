@@ -84,7 +84,7 @@ export class AuthService {
 
     onAuthStateChanged(this.afAuth, async (user: User | null) => {
       // set up a subscription to always know the login status of the user
-      console.log('Auth Service: onAuthStateChanged: user', user);
+      //console.log('Auth Service: onAuthStateChanged: user', user);
       if (user) {
         this.userLoggedIn = true;
         const userDoc = doc(this.afs, `users/${user.uid}`);
@@ -128,7 +128,7 @@ export class AuthService {
   async verifyJwt(idToken: string): Promise<string | jwt.JwtPayload> {
     const response: Response = await fetch(FirebaseJwksUrl);
     if (response === undefined) {
-      console.log('Auth Service: verifyJwt: response is undefined');
+      //console.log('Auth Service: verifyJwt: response is undefined');
       return Promise.reject('response is undefined');
     }
     const publicKeys = JSON.parse(await response.text());
@@ -160,13 +160,13 @@ export class AuthService {
   async loginUser(email: string, password: string): Promise<any> {
     return await signInWithEmailAndPassword(this.afAuth, email, password)
       .then(() => {
-        console.log('Auth Service: loginUser: success');
+        //console.log('Auth Service: loginUser: success');
         // this.router.navigate(['/dashboard']);
       })
       .catch((error) => {
-        console.log('Auth Service: login error...');
-        console.log('error code', error.code);
-        console.log('error', error);
+        //console.log('Auth Service: login error...');
+        //console.log('error code', error.code);
+        //console.log('error', error);
         if (error.code) return { isValid: false, message: error.message };
         return Promise.reject(error);
       });
@@ -174,11 +174,11 @@ export class AuthService {
 
   async googleSignIn() {
     const provider = new GoogleAuthProvider();
-    console.log(provider);
+    //console.log(provider);
     await signInWithRedirect(this.afAuth, provider);
 
     const result = await getRedirectResult(this.afAuth);
-    console.log(result);
+    //console.log(result);
     return this.updateUserData(result);
   }
   // const credential = await this.afAuth.signInWithPopup(provider);
@@ -203,7 +203,7 @@ export class AuthService {
         return Promise.resolve();
       })
       .catch((error) => {
-        console.log('Auth Service: signup error', error);
+        //console.log('Auth Service: signup error', error);
         if (error.code) return { isValid: false, message: error.message };
         return Promise.reject(error);
       });
@@ -212,13 +212,13 @@ export class AuthService {
   async resetPassword(email: string): Promise<any> {
     return await sendPasswordResetEmail(this.afAuth, email)
       .then(() => {
-        console.log('Auth Service: reset password success');
+        //console.log('Auth Service: reset password success');
         // this.router.navigate(['/amount']);
       })
       .catch((error) => {
-        console.log('Auth Service: reset password error...');
-        console.log(error.code);
-        console.log(error);
+        //console.log('Auth Service: reset password error...');
+        //console.log(error.code);
+        //console.log(error);
         if (error.code) return error;
       });
   }
@@ -238,9 +238,9 @@ export class AuthService {
         return Promise.resolve(true);
       })
       .catch((error) => {
-        console.log('Auth Service: sendVerificationEmail error...');
-        console.log('error code', error.code);
-        console.log('error', error);
+        //('Auth Service: sendVerificationEmail error...');
+        //console.log('error code', error.code);
+        //console.log('error', error);
         if (error.code) return Promise.reject(error);
         return Promise.reject();
       });
@@ -253,9 +253,9 @@ export class AuthService {
         this.router.navigate(['/home']); // when we log the user out, navigate them to home
       })
       .catch((error) => {
-        console.log('Auth Service: logout error...');
-        console.log('error code', error.code);
-        console.log('error', error);
+        //console.log('Auth Service: logout error...');
+        //console.log('error code', error.code);
+        //console.log('error', error);
         if (error.code) return error;
       });
   }
@@ -266,7 +266,7 @@ export class AuthService {
   // }
 
   async setUserInfo(payload: object) {
-    console.log('Auth Service: saving user info...');
+    //console.log('Auth Service: saving user info...');
     if (
       this.afAuth === null ||
       this.afAuth.currentUser === null ||
@@ -277,8 +277,8 @@ export class AuthService {
     const userPayload = payload as User;
     const userRef = doc(this.afs, `users/${userPayload.uid}`);
     return setDoc(userRef, userPayload, { merge: true }).then(function (res) {
-      console.log('Auth Service: setUserInfo response...');
-      console.log(res);
+      //console.log('Auth Service: setUserInfo response...');
+      //console.log(res);
     });
   }
 

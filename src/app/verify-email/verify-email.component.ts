@@ -36,7 +36,7 @@ export class VerifyEmailComponent implements OnInit {
         this.email = user.email;
       } else {
         this.email = '';
-        console.log('user is not logged in for subscribe');
+        //console.log('user is not logged in for subscribe');
       }
     });
   }
@@ -48,11 +48,11 @@ export class VerifyEmailComponent implements OnInit {
       .resendVerificationEmail()
       .then(() => {
         this.isProgressVisible = false; // no matter what, when the auth service returns, we hide the progress indicator
-        console.log('verification email resent...');
+        //console.log('verification email resent...');
         this.mailSent = true;
       })
       .catch((error) => {
-        console.log('verification error', error);
+        //console.log('verification error', error);
         this.mailSent = false;
       });
   }

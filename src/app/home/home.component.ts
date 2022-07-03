@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
   constructor(public afAuth: Auth, private firestore: Firestore) {}
 
   ngOnInit(): void {
-    console.log('ngOnInit');
+    //console.log('ngOnInit');
   }
 
   logout(): void {

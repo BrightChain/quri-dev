@@ -41,9 +41,9 @@ export class DashboardComponent implements OnInit {
       this.user$ = this.authService.user$;
       this.profile$ = this.authService.profile$;
       if (user !== null && user.email !== null) {
-        console.log('Dashboard: user', user);
+        //console.log('Dashboard: user', user);
       } else {
-        console.log('Dashboard: user is null');
+        //console.log('Dashboard: user is null');
       }
     });
   }
