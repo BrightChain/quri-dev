@@ -1,6 +1,8 @@
+// ---- Angular base requirements
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+// ---- App modules and components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -13,6 +15,10 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
+import { environment } from '../environments/environment';
+import { LoggingService } from './services/logging.service';
+
+// ---- Material
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +54,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 
+// ---- More Angular functions
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -65,7 +72,6 @@ import { provideFunctions, getFunctions } from '@angular/fire/functions';
 import { getAnalytics, provideAnalytics } from '@angular/fire/analytics';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 
 import { HttpClientModule } from '@angular/common/http';
 import { ConfigurationHelper } from 'src/configurationHelper';
@@ -206,6 +212,7 @@ export class AppModule {
     AppModule._instance = this;
     this.production =
       environment.production && environment.firebase.projectId == 'quri-social';
+    LoggingService.Initialize(this.production);
   }
 
   public static getInstance(): AppModule {

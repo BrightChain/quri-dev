@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
+import { Auth, User } from '@angular/fire/auth';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
@@ -8,6 +8,7 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { LoggingService } from './logging.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,10 @@ export class AuthGuard implements CanActivate {
     | boolean
     | UrlTree {
     return new Promise((resolve, reject) => {
-      this.afAuth.onAuthStateChanged((user) => {
+      this.afAuth.onAuthStateChanged((user: User | null) => {
+        LoggingService.info('AuthGuard: onAuthStateChanged', {
+          user: user ? user.uid : null,
+        });
         if (user) {
           // if (!user.emailVerified)                            // if the user hasn't verified their email, send them to that page
           //     this.router.navigate(['/verify-email']);

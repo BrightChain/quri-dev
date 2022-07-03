@@ -13,7 +13,7 @@ if [[ "$projectId" == "" ]]; then
 fi
 echo "Running ${0} for project ${projectId} from ${currentDir}"
 
-git update-index --assume-unchanged src/environments/environment.*.ts
+git update-index --assume-unchanged src/environments/environment*.ts
 
 echo "Making src/firebaseAppCheckConfig.ts"
 #APP_CHECK_CONFIG="export const firebaseAppCheckConfig = {\\n  siteKey: '${firebaseAppCheckKey}',\\n};"

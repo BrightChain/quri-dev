@@ -1,6 +1,7 @@
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { AppModule } from './app/app.module';
-import { ConfigurationSource, environment } from './environments/environment';
+import { environment } from './environments/environment';
+import { ConfigurationSource } from './enumerations/configurationSource';
 import { IConfigurationPair } from './interfaces';
 
 declare global {

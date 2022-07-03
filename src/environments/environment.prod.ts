@@ -1,15 +1,5 @@
-import { FirebaseOptions } from 'firebase/app';
-
-export enum ConfigurationSource {
-  Environment,
-  FirebaseHosting,
-  FirebaseHostingApp,
-}
-export interface IEnvironment {
-  production: boolean;
-  configurationSource: ConfigurationSource;
-  firebase: FirebaseOptions;
-}
+import { IEnvironment } from '../environments/interfaces.environment';
+import { ConfigurationSource } from '../enumerations/configurationSource';
 
 /* replace with your own values if required, while these are not sensitive accoreding to firebase,
  * should not be committed unless your implementation requires it.
