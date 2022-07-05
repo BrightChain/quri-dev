@@ -1,13 +1,8 @@
 import { Firestore } from '@angular/fire/firestore';
 import { uuidv4 } from '@firebase/util';
-import {
-  doc,
-  getFirestore,
-  serverTimestamp,
-  setDoc,
-  Timestamp,
-} from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc, Timestamp } from 'firebase/firestore';
 import { ILogEntry } from '../../environments/interfaces.environment';
+import { LogLevel } from '../../enumerations/logLevel';
 
 export class LoggingService {
   private static initialized: boolean;
@@ -17,9 +12,7 @@ export class LoggingService {
     if (LoggingService.initialized) {
       console.debug('WARNING: LoggingService.Initialize() called twice');
     }
-    this.firestoreLog('info', 'LoggingService.Initialize', {
-      production: logToFirestore,
-    });
+    this.info('LoggingService.Initialize');
     LoggingService.firestore = firestore;
     LoggingService.logToFirestore = logToFirestore;
     LoggingService.initialized = true;
@@ -27,7 +20,7 @@ export class LoggingService {
   private static logToFirestore: boolean;
   private static firestore: Firestore | null = null;
 
-  private static firestoreLog(level, ...args): void {
+  private static makeLogEntry(level: LogLevel, ...args: any[]): ILogEntry {
     const argsArray = Array<object>();
     for (const arg of args) {
       const argObject: object = arg;
@@ -40,12 +33,19 @@ export class LoggingService {
       time: serverTimestamp() as Timestamp,
       args: argsArray,
     };
+    return log;
+  }
+
+  private static firestoreLog(level: LogLevel, ...args: any[]): void {
+    const log: ILogEntry = this.makeLogEntry(level, ...args);
     LoggingService.backlog.push(log);
-    Promise.all([
-      async () => {
-        await LoggingService.pushBacklog();
-      },
-    ]);
+    try {
+      Promise.all([
+        async () => {
+          await LoggingService.pushBacklog();
+        },
+      ]);
+    } catch (e) {}
   }
 
   private static async pushLog(entry: ILogEntry): Promise<void> {
@@ -57,14 +57,20 @@ export class LoggingService {
     return Promise.resolve();
   }
 
+  private static _pushMutex = false;
   private static async pushBacklog(): Promise<void> {
-    if (!LoggingService.initialized || LoggingService.firestore === null) {
+    if (
+      !LoggingService.initialized ||
+      LoggingService.firestore === null ||
+      this._pushMutex
+    ) {
       return;
     }
-    LoggingService.lastRetry = new Date();
+    this._pushMutex = true;
     let stop = false;
     while (LoggingService.backlog.length > 0 && !stop) {
       const entry = LoggingService.backlog.shift() as ILogEntry;
+      LoggingService.lastRetry = new Date();
       await LoggingService.pushLog(entry)
         .then(() => {
           //
@@ -79,13 +85,14 @@ export class LoggingService {
           }, 1000);
         });
     }
+    this._pushMutex = false;
     return stop ? Promise.reject() : Promise.resolve();
   }
 
   private static fromFirestoreLog(entry: Array<object>): ILogEntry {
     return {
       id: entry[0].toString(),
-      level: entry[1].toString(),
+      level: entry[1].toString() as LogLevel,
       localTime: entry[2] as Date,
       time: entry[3] as Timestamp,
       args: entry[4] as Array<object>,
@@ -94,37 +101,37 @@ export class LoggingService {
 
   public static log(...args): void {
     if (LoggingService.logToFirestore) {
-      LoggingService.firestoreLog('log', ...args);
+      LoggingService.firestoreLog(LogLevel.Log, ...args);
     }
     console.log(...args);
   }
   public static error(...args): void {
     if (LoggingService.logToFirestore) {
-      LoggingService.firestoreLog('error', ...args);
+      LoggingService.firestoreLog(LogLevel.Error, ...args);
     }
     console.error(...args);
   }
   public static warn(...args): void {
     if (LoggingService.logToFirestore) {
-      LoggingService.firestoreLog('warn', ...args);
+      LoggingService.firestoreLog(LogLevel.Warning, ...args);
     }
     console.warn(...args);
   }
   public static info(...args): void {
     if (LoggingService.logToFirestore) {
-      LoggingService.firestoreLog('info', ...args);
+      LoggingService.firestoreLog(LogLevel.Info, ...args);
     }
     console.info(...args);
   }
   public static debug(...args): void {
     if (LoggingService.logToFirestore) {
-      LoggingService.firestoreLog('debug', ...args);
+      LoggingService.firestoreLog(LogLevel.Debug, ...args);
     }
     console.debug(...args);
   }
   public static trace(...args): void {
     if (LoggingService.logToFirestore) {
-      LoggingService.firestoreLog('trace', ...args);
+      LoggingService.firestoreLog(LogLevel.Trace, ...args);
     }
     console.trace(...args);
   }

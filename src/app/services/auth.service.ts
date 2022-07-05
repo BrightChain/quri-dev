@@ -47,7 +47,7 @@ import { QuriUserProfile } from '../../quriUserProfile';
 import { QuriUser } from '../../quriUser';
 import { environment } from '../../environments/environment';
 import * as jwt from 'jsonwebtoken';
-import { getIdToken } from 'firebase/auth';
+import { LoggingService } from './logging.service';
 
 //// <summary>
 //// The URL of the JWKS endpoint.
@@ -85,7 +85,7 @@ export class AuthService {
     onAuthStateChanged(this.afAuth, async (user: User | null) => {
       // set up a subscription to always know the login status of the user
       //console.log('Auth Service: onAuthStateChanged: user', user);
-      if (user) {
+      if (user !== null) {
         this.userLoggedIn = true;
         const userDoc = doc(this.afs, `users/${user.uid}`);
         this.user$ = docData(userDoc) as Observable<User>;
@@ -93,7 +93,7 @@ export class AuthService {
         const profileDoc = doc(this.afs, `profiles/${user.uid}`);
         this.profile$ = docData(profileDoc) as Observable<QuriUserProfile>;
 
-        const token = await user.getIdToken();
+        const token = await user.getIdToken(true);
         console.debug('Auth Service: onAuthStateChanged: validating token');
         await this.validateToken(token)
           .then((validationResult) => {
@@ -113,7 +113,9 @@ export class AuthService {
           });
 
         if (!this.tokenValidated) {
-          console.error('Auth Service: onAuthStateChanged: token is invalid');
+          LoggingService.error(
+            'Auth Service: onAuthStateChanged: token is invalid'
+          );
           this.logoutUser();
         }
       } else {
