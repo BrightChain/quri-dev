@@ -99,37 +99,37 @@ export class LoggingService {
     };
   }
 
-  public static log(...args): void {
+  public static log(...args: any[]): void {
     if (LoggingService.logToFirestore) {
       LoggingService.firestoreLog(LogLevel.Log, ...args);
     }
     console.log(...args);
   }
-  public static error(...args): void {
+  public static error(...args: any[]): void {
     if (LoggingService.logToFirestore) {
       LoggingService.firestoreLog(LogLevel.Error, ...args);
     }
     console.error(...args);
   }
-  public static warn(...args): void {
+  public static warn(...args: any[]): void {
     if (LoggingService.logToFirestore) {
       LoggingService.firestoreLog(LogLevel.Warning, ...args);
     }
     console.warn(...args);
   }
-  public static info(...args): void {
+  public static info(...args: any[]): void {
     if (LoggingService.logToFirestore) {
       LoggingService.firestoreLog(LogLevel.Info, ...args);
     }
     console.info(...args);
   }
-  public static debug(...args): void {
+  public static debug(...args: any[]): void {
     if (LoggingService.logToFirestore) {
       LoggingService.firestoreLog(LogLevel.Debug, ...args);
     }
     console.debug(...args);
   }
-  public static trace(...args): void {
+  public static trace(...args: any[]): void {
     if (LoggingService.logToFirestore) {
       LoggingService.firestoreLog(LogLevel.Trace, ...args);
     }

@@ -11,7 +11,7 @@ import {
 import { AuthService } from '../services/auth.service';
 
 import { Observable, of } from 'rxjs';
-import { QuriUserProfile } from 'src/quriUserProfile';
+import { QuriUserProfile } from '../../quriUserProfile';
 
 @Component({
   selector: 'app-dashboard',

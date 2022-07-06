@@ -5,7 +5,7 @@ import { Firestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
-import { QuriUserProfile } from 'src/quriUserProfile';
+import { QuriUserProfile } from '../../quriUserProfile';
 import { AuthService } from '../services/auth.service';
 
 @Component({

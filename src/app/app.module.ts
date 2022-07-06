@@ -74,8 +74,8 @@ import { getAnalytics, provideAnalytics } from '@angular/fire/analytics';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { HttpClientModule } from '@angular/common/http';
-import { ConfigurationHelper } from 'src/configurationHelper';
-import { firebaseAppCheckConfig } from 'src/firebaseAppCheckConfig';
+import { ConfigurationHelper } from '../configurationHelper';
+import { firebaseAppCheckConfig } from '../firebaseAppCheckConfig';
 import { FirebaseApp } from 'firebase/app';
 
 let _appRef: FirebaseApp | null = null;
@@ -225,7 +225,7 @@ export class AppModule {
     const loadedModules: Array<string> = [];
     for (let x = 0; x < allFeatures.length; x++) {
       const feature = allFeatures[x];
-      if (typeof firebaseApp[feature] === 'function') {
+      if (typeof (firebaseApp as any)[feature] === 'function') {
         loadedModules.push(feature);
       }
     }
