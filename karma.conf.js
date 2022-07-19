@@ -42,7 +42,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome','ChromeHeadless'],
+    browsers: ['Chrome'],
     concurrency: Infinity,
     // singleRun: false, // Karma captures browsers, runs the tests and exits
     singleRun: false,

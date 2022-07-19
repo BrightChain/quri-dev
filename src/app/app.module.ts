@@ -120,11 +120,7 @@ const allFeatures: Array<string> = [
     provideAnalytics(() => getAnalytics()),
     provideFirebaseApp(() => {
       console.debug('provideFirebaseApp');
-      const configPair = ConfigurationHelper.EnsureConfiguration();
-      const app = initializeApp(configPair.options);
-      environment.firebase = configPair.options;
-      _appRef = app;
-      return app;
+      return _getAppRef();
     }),
     provideAppCheck((): AppCheck => {
       (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = !environment.production;
