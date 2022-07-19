@@ -73,17 +73,17 @@ export class AuthService {
 
   constructor(
     private router: Router,
-    private afAuth: Auth,
+    private auth: Auth,
     private afs: Firestore
   ) {
-    this.afAuth = afAuth;
+    this.auth = auth;
     this.afs = afs;
     this.router = router;
     this.userLoggedIn = false;
     this.tokenValidated = false;
     this.isAdministrator = false;
 
-    onAuthStateChanged(this.afAuth, async (user: User | null) => {
+    onAuthStateChanged(this.auth, async (user: User | null) => {
       // set up a subscription to always know the login status of the user
       //console.log('Auth Service: onAuthStateChanged: user', user);
       if (user !== null) {
@@ -161,7 +161,7 @@ export class AuthService {
   }
 
   async loginUser(email: string, password: string): Promise<any> {
-    return await signInWithEmailAndPassword(this.afAuth, email, password)
+    return await signInWithEmailAndPassword(this.auth, email, password)
       .then(() => {
         //console.log('Auth Service: loginUser: success');
         // this.router.navigate(['/dashboard']);
@@ -178,18 +178,18 @@ export class AuthService {
   async googleSignIn() {
     const provider = new GoogleAuthProvider();
     //console.log(provider);
-    await signInWithRedirect(this.afAuth, provider);
+    await signInWithRedirect(this.auth, provider);
 
-    const result = await getRedirectResult(this.afAuth);
+    const result = await getRedirectResult(this.auth);
     //console.log(result);
     return this.updateUserData(result);
   }
-  // const credential = await this.afAuth.signInWithPopup(provider);
+  // const credential = await this.auth.signInWithPopup(provider);
   // return this.updateUserData(credential.user);
 
   async signupUser(user: any): Promise<any> {
     return await createUserWithEmailAndPassword(
-      this.afAuth,
+      this.auth,
       user.email,
       user.password
     )
@@ -213,7 +213,7 @@ export class AuthService {
   }
 
   async resetPassword(email: string): Promise<any> {
-    return await sendPasswordResetEmail(this.afAuth, email)
+    return await sendPasswordResetEmail(this.auth, email)
       .then(() => {
         //console.log('Auth Service: reset password success');
         // this.router.navigate(['/amount']);
@@ -227,15 +227,15 @@ export class AuthService {
   }
 
   async resendVerificationEmail(): Promise<boolean> {
-    if (this.afAuth === null) {
+    if (this.auth === null) {
       return Promise.resolve(false);
     }
-    const afAuthUser = await this.afAuth.currentUser;
-    if (afAuthUser === null) {
+    const authUser = await this.auth.currentUser;
+    if (authUser === null) {
       return Promise.resolve(false);
     }
     // verification email is sent in the Sign Up function, but if you need to resend, call this function
-    return sendEmailVerification(afAuthUser)
+    return sendEmailVerification(authUser)
       .then(() => {
         // this.router.navigate(['home']);
         return Promise.resolve(true);
@@ -250,7 +250,7 @@ export class AuthService {
   }
 
   logoutUser(): Promise<void> {
-    return this.afAuth
+    return this.auth
       .signOut()
       .then(() => {
         this.router.navigate(['/home']); // when we log the user out, navigate them to home
@@ -264,16 +264,16 @@ export class AuthService {
   }
 
   // async signOut() {
-  //   await this.afAuth.signOut();
+  //   await this.auth.signOut();
   //   return this.router.navigate(['/']);
   // }
 
   async setUserInfo(payload: object) {
     //console.log('Auth Service: saving user info...');
     if (
-      this.afAuth === null ||
-      this.afAuth.currentUser === null ||
-      this.afAuth.currentUser.email === null
+      this.auth === null ||
+      this.auth.currentUser === null ||
+      this.auth.currentUser.email === null
     ) {
       return false;
     }
@@ -305,6 +305,6 @@ export class AuthService {
   }
 
   getCurrentUser() {
-    return this.afAuth.currentUser; // returns user object for logged-in users, otherwise returns null
+    return this.auth.currentUser; // returns user object for logged-in users, otherwise returns null
   }
 }

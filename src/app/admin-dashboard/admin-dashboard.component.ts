@@ -18,14 +18,14 @@ export class AdminDashboardComponent implements OnInit {
   profile$: Observable<QuriUserProfile | null> | undefined;
 
   constructor(
-    private afAuth: Auth,
+    private auth: Auth,
     private firestore: Firestore,
     private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    onAuthStateChanged(this.afAuth, (user: User | null) => {
+    onAuthStateChanged(this.auth, (user: User | null) => {
       this.user$ = this.authService.user$;
       this.profile$ = this.authService.profile$;
       if (user !== null && user.email !== null) {

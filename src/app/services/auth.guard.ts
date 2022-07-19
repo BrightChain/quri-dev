@@ -14,7 +14,7 @@ import { LoggingService } from './logging.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private afAuth: Auth) {}
+  constructor(private router: Router, private auth: Auth) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
     | boolean
     | UrlTree {
     return new Promise((resolve, reject) => {
-      this.afAuth.onAuthStateChanged((user: User | null) => {
+      this.auth.onAuthStateChanged((user: User | null) => {
         LoggingService.info('AuthGuard: onAuthStateChanged', {
           user: user ? user.uid : null,
         });

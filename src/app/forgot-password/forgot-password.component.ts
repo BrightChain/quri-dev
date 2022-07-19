@@ -19,7 +19,7 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private afAuth: Auth
+    private auth: Auth
   ) {
     this.mailSent = false;
     this.isProgressVisible = false;
@@ -32,7 +32,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    onAuthStateChanged(this.afAuth, (user: User | null) => {
+    onAuthStateChanged(this.auth, (user: User | null) => {
       if (user !== null && user.email !== null) {
         // if the user is logged in, update the form value with their email address
         this.forgotPasswordForm.patchValue({

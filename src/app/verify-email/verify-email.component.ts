@@ -20,7 +20,7 @@ export class VerifyEmailComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    public afAuth: Auth
+    public auth: Auth
   ) {
     this.email = '';
     this.mailSent = false;
@@ -30,7 +30,7 @@ export class VerifyEmailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.afAuth.onAuthStateChanged((user) => {
+    this.auth.onAuthStateChanged((user) => {
       // if the user is logged in, update the form value with their email address
       if (user !== null && user.email !== null) {
         this.email = user.email;

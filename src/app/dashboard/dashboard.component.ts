@@ -23,11 +23,11 @@ export class DashboardComponent implements OnInit {
   profile$: Observable<QuriUserProfile | null> | undefined;
 
   constructor(
-    private afAuth: Auth,
+    private auth: Auth,
     private firestore: Firestore,
     private authService: AuthService
   ) {
-    this.afAuth = afAuth;
+    this.auth = auth;
     this.firestore = firestore;
     this.authService = authService;
   }
@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    onAuthStateChanged(this.afAuth, (user: User | null) => {
+    onAuthStateChanged(this.auth, (user: User | null) => {
       this.user$ = this.authService.user$;
       this.profile$ = this.authService.profile$;
       if (user !== null && user.email !== null) {

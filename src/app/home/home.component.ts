@@ -10,13 +10,13 @@ import { Observable } from 'rxjs';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor(public afAuth: Auth, private firestore: Firestore) {}
+  constructor(public auth: Auth, private firestore: Firestore) {}
 
   ngOnInit(): void {
     //console.log('ngOnInit');
   }
 
   logout(): void {
-    this.afAuth.signOut();
+    this.auth.signOut();
   }
 }

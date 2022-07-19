@@ -17,7 +17,7 @@ export class SignupComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private afAuth: Auth
+    private auth: Auth
   ) {
     this.isProgressVisible = false;
     this.firebaseErrorMessage = '';
@@ -26,7 +26,7 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.userLoggedIn) {
-      // if the user's logged in, navigate them to the dashboard (NOTE: don't use afAuth.currentUser -- it's never null)
+      // if the user's logged in, navigate them to the dashboard (NOTE: don't use auth.currentUser -- it's never null)
       this.router.navigate(['/dashboard']);
     }
 

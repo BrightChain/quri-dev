@@ -38,11 +38,11 @@ Home
 
 <br>
 
-<mat-card *ngIf="afAuth.currentUser !== null">
+<mat-card *ngIf="auth.currentUser !== null">
     <mat-icon>check_circle</mat-icon>
     <span>User is logged in</span>
 </mat-card>
-<mat-card *ngIf="afAuth.currentUser === null">
+<mat-card *ngIf="auth.currentUser === null">
     <mat-icon>do_not_disturb</mat-icon>
     <span>User is not logged in</span>
 </mat-card>
