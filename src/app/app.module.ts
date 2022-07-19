@@ -58,7 +58,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { Auth, AuthModule, getAuth, provideAuth } from '@angular/fire/auth';
 import {
   AppCheck,
   initializeAppCheck,
@@ -113,6 +113,7 @@ const allFeatures: Array<string> = [
     AdminDashboardComponent,
   ],
   imports: [
+    AuthModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,

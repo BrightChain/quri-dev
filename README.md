@@ -10,6 +10,16 @@
 Rating strength is affected by your own reputation.
 Rankings can then be used by API for reputation systems, anti-spam (email, phone, and web), and more.
 
+## Components
+* [qURI](https://github.com/BrightChain/quri) (this repo) - the client code, attached to PROD CI deploy to quri.social
+* [qURI-dev](https://github.com/BrightChain/quri-dev) - clone of this repo, attached to dev CI deploy to dev.quri.social
+* [qURI-admin](https://github.com/BrightChain/quri-admin) - react based firebase admin panel to manage users and backend data
+
+## Dev flow
+* fork quri-dev to personal, work off perosnal with npm run start, test/debug
+* PR to quri-dev, test after it is deployed
+* PR to quri prod, test after deployed
+
 ## Stack
 * Firebase hosting/authentication/database
 * npm/node

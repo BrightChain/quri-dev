@@ -57,6 +57,7 @@ export const FirebaseJwksUrl =
 @Injectable({
   providedIn: 'root',
 })
+@Injectable()
 export class AuthService {
   userLoggedIn: boolean; // other components can check on this variable for the login status of the user
   user$: Observable<User | null> | undefined;
