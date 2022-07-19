@@ -13,19 +13,12 @@ jobs:
         env:
           firebaseAppCheckKey: '${{ secrets.FIREBASE_APP_CHECK_KEY }}'
           projectId: '${{ secrets.FIREBASE_PROJECTID }}'
+      - name: "debug build"
+        run: yarn && yarn run build:debug
       - uses: browser-actions/setup-chrome@latest
       - run: |
           export CHROMIUM_BIN=$(which chrome)
           CHROMIUM_VERSION=$(chrome --version)
           echo "Using CHROMIUM_BIN=${CHROMIUM_BIN} version=${CHROMIUM_VERSION}"
-      - name: "production build"
-        if: ${{ github.repository == 'BrightChain/quri' }}
-        run: yarn && yarn run lint && yarn run build
-      - name: "debug build"
-        if: ${{ github.repository == 'BrightChain/quri-dev' }}
-        run: yarn && yarn run build:debug
-      - name: "fail build"
-        if: ${{ github.repository != 'BrightChain/quri' && github.repository != 'BrightChain/quri-dev' }}
-        run: "exit 1"
       - name: "test"
         run: yarn run test:ci
