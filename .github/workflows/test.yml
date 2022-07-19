@@ -13,8 +13,8 @@ jobs:
         env:
           firebaseAppCheckKey: '${{ secrets.FIREBASE_APP_CHECK_KEY }}'
           projectId: '${{ secrets.FIREBASE_PROJECTID }}'
-      - name: "debug build"
-        run: yarn && yarn run build:debug
+      - name: "install prerequisites"
+        run: yarn
       - uses: browser-actions/setup-chrome@latest
       - run: |
           export CHROMIUM_BIN=$(which chrome)
