@@ -125,7 +125,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/cli@~14.0.4":
+"@angular/cli@~14.0.6":
   version "14.0.6"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-14.0.6.tgz#93d3f1d24c3ac27f0d6e81d08c0db4926f07b162"
   integrity sha512-q8iByoyVNLUOCosc5/wD9FkaM09d5HOic5RYSAg265pMgreQ/oQM1ajGRzzVWFhzw/RlUuon8ezZyAUAXfszCQ==
@@ -158,7 +158,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/compiler-cli@^14.0.3":
+"@angular/compiler-cli@^14.0.6":
   version "14.0.6"
   resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-14.0.6.tgz#c87e2698b6a642919bfe9b5d66ea9ef3095a396d"
   integrity sha512-w1ccZEzbRRqzMNaty0P4QliSslmR+9pBhDpKNfI+PsRqjJOnyC9tFdtZQLjcbnaM8W0yJLnCfZQ7KKXjnjzawg==
@@ -2380,7 +2380,7 @@
   dependencies:
     "@types/node" "*"
 
-"@typescript-eslint/eslint-plugin@^5.30.0":
+"@typescript-eslint/eslint-plugin@^5.30.7":
   version "5.30.7"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.30.7.tgz#1621dabc1ae4084310e19e9efc80dfdbb97e7493"
   integrity sha512-l4L6Do+tfeM2OK0GJsU7TUcM/1oN/N25xHm3Jb4z3OiDU4Lj8dIuxX9LpVMS9riSXQs42D1ieX7b85/r16H9Fw==
@@ -4309,7 +4309,7 @@ eslint-visitor-keys@^3.1.0, eslint-visitor-keys@^3.3.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.3.0.tgz#f6480fa6b1f30efe2d1968aa8ac745b862469826"
   integrity sha512-mQ+suqKJVyeuwGYHAdjMFqjCyfl8+Ldnxuyp3ldiMBFKkvytrXUZWaiPCEav8qDHKty44bD+qV1IP4T+w+xXRA==
 
-eslint@^8.17.0, eslint@^8.7.0:
+eslint@^8.20.0, eslint@^8.7.0:
   version "8.20.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.20.0.tgz#048ac56aa18529967da8354a478be4ec0a2bc81b"
   integrity sha512-d4ixhz5SKCa1D6SCPrivP7yYVi7nyD6A4vs6HIAul9ujBzcEmZVM3/0NN/yu5nKhmO1wjp5xQ46iRfmDGlOviA==
