@@ -6,6 +6,9 @@ name: Testing
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
