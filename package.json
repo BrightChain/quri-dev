@@ -11,7 +11,8 @@
     "build:debug": "ng build -c development",
     "build:production": "ng build --aot",
     "test": "ng test",
-    "lint": "tsc --noEmit && eslint . --ext js,ts,json --quiet --fix",
+    "lint": "tsc --noEmit && eslint . --ext js,ts,json",
+    "lint:fix": "tsc --noEmit && eslint . --ext js,ts,json --quiet --fix",
     "e2e": "ng e2e",
     "watch": "ng build --watch --configuration development"
   },
