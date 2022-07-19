@@ -18,10 +18,10 @@ jobs:
           projectId: '${{ secrets.FIREBASE_PROJECTID }}'
       - name: "production build"
         if: ${{ github.repository == 'BrightChain/quri' }}
-        run: npm ci && npm run build
+        run: yarn && yarn run build
       - name: "debug build"
         if: ${{ github.repository == 'BrightChain/quri-dev' }}
-        run: npm ci && npm run build:debug
+        run: yarn && yarn run build:debug
       - name: "fail build"
         if: ${{ github.repository != 'BrightChain/quri' && github.repository != 'BrightChain/quri-dev' }}
         run: "exit 1"
