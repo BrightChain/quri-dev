@@ -1,0 +1,15 @@
+[submodule "src/reference/js-offs"]
+	path = reference/js-offs
+	url = https://github.com/BrightChain/js-offs.git
+[submodule "src/reference/js-ons"]
+	path = reference/js-ons
+	url = https://github.com/BrightChain/js-ons.git
+[submodule "src/reference/libblockify"]
+	path = reference/libblockify
+	url = https://github.com/BrightChain/libblockify.git
+[submodule "src/reference/blockify-docs-and-nodejs"]
+	path = reference/blockify-docs-and-nodejs
+	url = https://github.com/BrightChain/blockify-docs-and-nodejs.git
+[submodule "src/reference/bbp-formula"]
+	path = reference/bbp-formula
+	url = https://github.com/kaue/bbp-formula.git
